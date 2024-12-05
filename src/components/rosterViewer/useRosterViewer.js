@@ -10,12 +10,15 @@ let reducer = (state, action) => {
         case "refresh":
             result.isLoading = false;
             break;
+        case "setError":
+            result.error = action.error;
+            break;
         case "showLoading":
-            result.isLoading =true;
+            result.isLoading = true;
             break;
         default:
             break;
-    }   
+    }
     return result;
 }
 export default function useRosterViewer() {
@@ -50,7 +53,7 @@ export default function useRosterViewer() {
     }
     let updateRosterMonth = async newRosterMonth => {
         try {
-            updateItemList({"type":"showLoading"});
+            updateItemList({ "type": "showLoading" });
             await itemList.rosterViewerData.reload(newRosterMonth);
             updateItemList({
                 type: "refresh"
@@ -67,7 +70,7 @@ export default function useRosterViewer() {
         rosterViewerData: itemList.rosterViewerData,
         selectedShift: itemList.selectedShift,
         dataAction: {
-            getShiftCssClassName,         
+            getShiftCssClassName,
             updateRosterMonth
         }
     }

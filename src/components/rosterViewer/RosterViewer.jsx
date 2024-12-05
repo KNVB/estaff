@@ -13,7 +13,7 @@ export default function RosterViewer(){
             result=<Loading />;
             break;
         default:
-            document.title = "EMSTF Computer Operator Roster";            
+            document.title = "EMSTF Staff Roster";            
             result=<RosterTable dataAction={dataAction} rosterViewerData={rosterViewerData} />
             break    
     }

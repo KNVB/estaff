@@ -9,7 +9,10 @@ export default defineConfig({
       "/publicAPI": {
         target: "http://localhost:9000",
         changeOrigin: true,
-        secure: false        
+      },
+      "/privateAPI": {
+        target: "http://localhost:9000",
+        changeOrigin: true,
       }
     }
   }
