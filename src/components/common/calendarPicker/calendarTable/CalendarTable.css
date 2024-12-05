@@ -1,0 +1,23 @@
+.calendarTable {
+    border: 1px #5dade2 solid;
+    border-collapse: separate; 
+    border-radius: 5%;    
+    font-size: 12px;
+    margin: 0px;
+    margin-bottom: 2px;
+}
+.calendarTable td {
+    min-height: 33px;
+    min-width: 33px;
+    text-align: center;
+}
+
+.calendarTable>tbody td {
+    margin: 1px
+}
+
+.calendarTable>tbody td:not(:empty):hover {
+    background-color: #5dade2;
+    color: black;
+    cursor: pointer;
+}

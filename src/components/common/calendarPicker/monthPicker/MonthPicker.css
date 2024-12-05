@@ -1,0 +1,21 @@
+.monthPicker{
+    display: inline-block;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+.month{
+    font-size: 16px;
+}
+.monthPickResult {
+    cursor: pointer;
+    text-decoration: underline;
+    margin: 1px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+.thisMonth:hover {
+    background-color: red;
+    color:white;
+    cursor: pointer;
+}

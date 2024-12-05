@@ -1,0 +1,27 @@
+.center {
+    text-align: center;
+}
+.clickable {
+    cursor: pointer;
+}
+.disabled{
+    color:rgb(108, 117, 125);
+}
+.ph {
+    color: red;
+    font-weight: bold;
+}
+.pickerContainer {
+    background-color: white;
+    border: 1px solid #5dade2;
+    border-radius: 5%;
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    z-index: 1000;
+}
+.selectedItem {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
