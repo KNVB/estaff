@@ -102,6 +102,13 @@ export function useStaffForm() {
         }
         updateItemList({ type: "updateAvailableShift", value: temp });
     }
+    let updateDate = (fieldName, value) => {
+        updateItemList({
+            fieldName,
+            "value": value.toLocaleDateString("en-CA"),
+            type: "updateDate"
+        });
+    }
     let updateDutyPattern = e => {
         let availableShift = ["a", "b", "c", "d1", "d2", "O"];
         let value = e.target.value;
@@ -156,6 +163,7 @@ export function useStaffForm() {
         removeShiftPattern,
         staffInfo: itemList.staffInfo,
         updateAvailableShift,
+        updateDate,
         updateDutyPattern,
         updateShiftPattern,
         updateTextField

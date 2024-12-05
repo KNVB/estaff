@@ -94,7 +94,7 @@ export default function StaffInfoTable({formItem,staffAction}){
                             <td className="border border-dark">                              
                                 <DatePicker
                                     locale="en-ca"
-                                    onChange={joinDate => updateDate("joinDate", joinDate)}
+                                    onChange={joinDate => formItem.updateDate("joinDate", joinDate)}
                                     required={true}
                                     value={formItem.staffInfo.joinDate} />
                             </td>
