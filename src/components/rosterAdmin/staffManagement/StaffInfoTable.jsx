@@ -1,6 +1,8 @@
 import { Button } from "react-bootstrap";
 import { DashCircleFill, PlusCircleFill } from 'react-bootstrap-icons';
-
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import DatePicker from "react-date-picker";
 export default function StaffInfoTable({formItem,staffAction}){
     let blackListedShiftPattern = "(a|(b[1]?)|c|d[123]?)(,(a|(b[1]?)|c|d[123]?))*";
     let submitUpdate=e=>{
@@ -95,8 +97,18 @@ export default function StaffInfoTable({formItem,staffAction}){
                                 <DatePicker
                                     locale="en-ca"
                                     onChange={joinDate => formItem.updateDate("joinDate", joinDate)}
-                                    required={true}
                                     value={formItem.staffInfo.joinDate} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="border border-dark">Leave Date</td>
+                            <td className="border border-dark">
+                                <DatePicker
+                                    locale="en-ca"
+                                    onChange={leaveDate => updateDate("leaveDate", leaveDate)}
+                                    required={true}
+                                    value={formItem.staffInfo.leaveDate} />
+                                &nbsp;*2099-12-31" mean active member
                             </td>
                         </tr>
                     </tbody>

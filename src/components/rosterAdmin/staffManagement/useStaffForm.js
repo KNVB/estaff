@@ -85,6 +85,41 @@ export function useStaffForm() {
             }
         }
     }
+    let isAvailableShiftValid = () => {
+        let result = false;
+        let isIncludeAShift = itemList.staffInfo.availableShift.includes("a");
+        let isIncludeBxShift = itemList.staffInfo.availableShift.includes("b") || itemList.staffInfo.availableShift.includes("b1");
+        let isIncludeCShift = itemList.staffInfo.availableShift.includes("c");
+        let isIncludeDxShift = itemList.staffInfo.availableShift.includes("d") || itemList.staffInfo.availableShift.includes("d1") || itemList.stafInfo.availableShift.includes("d2") || itemList.staffInfo.availableShift.includes("d3");
+
+        if (itemList.staffInfo.dutyPattern === "day") {
+            if (!isIncludeDxShift) {
+                alert("Missing dx shift in available shift.");
+                return result
+            }
+            return true
+        } else {
+            if (itemList.staffInfo.dutyPattern === "operator") {
+                if (!isIncludeAShift) {
+                    alert("Missing A Shift in available shift.");
+                    return result
+                }
+                if (!isIncludeBxShift) {
+                    alert("Missing bx Shift in available shift.");
+                    return result
+                }
+                if (!isIncludeCShift) {
+                    alert("Missing c Shift in available shift.");
+                    return result
+                }
+                if (!isIncludeDxShift) {
+                    alert("Missing dx Shift in available shift.");
+                    return result
+                }
+                return true
+            }
+        }
+    }
     let removeShiftPattern = index => {
         updateItemList({
             index: index,

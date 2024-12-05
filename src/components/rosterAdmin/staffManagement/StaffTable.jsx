@@ -52,7 +52,7 @@ export default function StaffTable({staffList}){
                         <div className="d-flex flex-grow-1 justify-content-end p-1">
                             <Link
                                 state={{ "staff": Staff() }}
-                                to="../itoManagement/add">
+                                to="../staffManagement/add">
                                 <Button className="d-flex align-items-center">
                                     <PlusLg />
                                     Add New Staff

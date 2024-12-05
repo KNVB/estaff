@@ -11,6 +11,6 @@ export default class Staff {
         return await this.#fetchAPI.getStaffList();
     }
     async updateStaffInfo(staffInfo) {
-        return await this.#fetchAPI.updateStaff(staffInfo);
+        return await this.#fetchAPI.updateStaffInfo(staffInfo);
     }
 }

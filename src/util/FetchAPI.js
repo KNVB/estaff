@@ -24,6 +24,9 @@ export default class FetchAPI {
             }
         );
     }
+    addStaffInfo = async staffInfo => {
+        return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/addStaffInfo"));
+    }
     exportRosterDataToExcel = async genExcelData => {
         return (await this.#secureFetch(genExcelData, "post", "/privateAPI/exportRosterDataToExcel", "blob"));
     }
@@ -50,6 +53,9 @@ export default class FetchAPI {
     }
     saveToDB = async (preferredShiftList, roster, rosterMonth) => {
         return (await this.#secureFetch({ preferredShiftList, roster, rosterMonth }, "post", "/privateAPI/updateRoster"));
+    }
+    updateStaffInfo = async staffInfo => {
+        return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/updateStaffInfo"));
     }
     //================================================================================================================================
     #downloadFile = (fileName, responseData) => {
