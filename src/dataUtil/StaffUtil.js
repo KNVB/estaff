@@ -1,5 +1,5 @@
 import FetchAPI from "../util/FetchAPI";
-export default class Staff {
+export default class StaffUtil {
     #fetchAPI;
     constructor() {
         this.#fetchAPI = new FetchAPI();

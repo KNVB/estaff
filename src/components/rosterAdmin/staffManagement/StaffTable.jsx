@@ -4,7 +4,7 @@ import { Pencil, PlusLg } from 'react-bootstrap-icons';
 import Staff from "./Staff";
 export default function StaffTable({staffList}){
     let staffRowList = [], isLeft;
-    console.log(staffList);
+    //console.log(staffList);
     for (const [staffId, staff] of Object.entries(staffList)) {
         isLeft = (staff.leaveDate !== "2099-12-31");
         staffRowList.push(

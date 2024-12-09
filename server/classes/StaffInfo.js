@@ -4,6 +4,18 @@ export default class StaffInfo{
     constructor() {
         this.#dboObj = new Dbo();
     }
+    addStaffInfo = async staffInfo=>{
+        staffInfo.staffId=staffInfo.staffPost+"_"+staffInfo.joinDate;
+        try {
+            return await this.#dboObj.addStaffInfo(staffInfo);
+        } catch (error) {
+            console.log("Something wrong when adding a staff info to DB:" + error);
+            throw (error);
+        }
+        finally {
+            this.#dboObj.close();
+        };
+    }
     getStaffList= async () => {
         try {
             let queryResult = await this.#dboObj.getStaffList();
@@ -13,6 +25,7 @@ export default class StaffInfo{
                     result[record.staff_id] = {
                         availableShift: record.available_shift.split(","),                       
                         dutyPattern: record.duty_pattern,
+                        hkoAdUser:record.hko_ad_user,
                         staffId: record.staff_id,
                         joinDate: record.join_date,
                         leaveDate: record.leave_date,
@@ -31,6 +44,17 @@ export default class StaffInfo{
             return result;
         } catch (error) {
             console.log("Something wrong when getting Staff list:" + error);
+            throw (error);
+        }
+        finally {
+            this.#dboObj.close();
+        };
+    }
+    updateStaffInfo = async staffInfo=>{
+        try {
+            return await this.#dboObj.updateStaffInfo(staffInfo);
+        } catch (error) {
+            console.log("Something wrong when updating a staff info to DB:" + error);
             throw (error);
         }
         finally {

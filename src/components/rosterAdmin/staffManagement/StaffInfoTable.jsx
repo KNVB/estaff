@@ -33,6 +33,12 @@ export default function StaffInfoTable({formItem,staffAction}){
                             </td>
                         </tr>
                         <tr>
+                            <td className="border border-dark">HKO AD login Name</td>
+                            <td className="border border-dark">
+                                <input name="hkoAdUser" onChange={formItem.updateTextField} required type="text" value={formItem.staffInfo.hkoAdUser} />
+                            </td>
+                        </tr>
+                        <tr>
                             <td className="border border-dark">Duty Pattern</td>
                             <td className="border border-dark">
                                 <input checked={(formItem.staffInfo.dutyPattern === "day")} name="dutyPattern" onChange={formItem.updateDutyPattern} required type="radio" value="day" />Monday to Friday<br />

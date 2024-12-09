@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import ActiveShiftList from "../../../dataUtil/ActiveShiftList";
-import Staff from "../../../dataUtil/Staff";
+import StaffUtil from "../../../dataUtil/StaffUtil";
 let reducer = (state, action) => {
     let result = { ...state };
     let temp;
@@ -56,7 +56,7 @@ export function useStaffForm() {
         activeShiftList: null,
         isLoading: true,
         staffInfo: data.state.staff,
-        staff: new Staff(),
+        staffUtil: new StaffUtil(),
         error: null,
     });
     let addShiftPattern = () => {
@@ -70,12 +70,12 @@ export function useStaffForm() {
             if (isAvailableShiftValid()) {
                 switch (action) {
                     case "add":
-                        await itemList.staff.addStaffInfo(itemList.staffInfo);
+                        await itemList.staffUtil.addStaffInfo(itemList.staffInfo);
                         alert("A New Staff Info is added.");
                         backToITOlList();
                         break;
                     case "edit":
-                        await itemList.staff.updateStaffInfo(itemList.staffInfo);
+                        await itemList.staffUtil.updateStaffInfo(itemList.staffInfo);
                         alert("The Staff info. has been saved.");
                         backToITOlList();
                         break;

@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import Staff from "../../../dataUtil/Staff";
+import StaffUtil from "../../../dataUtil/StaffUtil";
 let reducer = (state, action) => {
     let result = { ...state };
     switch (action.type) {
@@ -19,13 +19,13 @@ export function useStaffList() {
     const [itemList, updateItemList] = useReducer(reducer, {
         error: null,
         isLoading: true,
-        staff: new Staff(),
+        staffUtil: new StaffUtil(),
         staffList: {}
     });
     useEffect(() => {
         let getData = async () => {
             try {
-                let staffList = await itemList.staff.getStaffList();
+                let staffList = await itemList.staffUtil.getStaffList();
                 updateItemList({
                     staffList,
                     type: "init"

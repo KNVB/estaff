@@ -4,24 +4,24 @@ export default class ShiftInfo {
         this.activeShiftList = {};
         this.essentialShift = "";
     }
-    getITOBlackListShiftPattern = async (year, month) => {
+    getBlackListShiftPattern = async (year, month) => {
         let dboObj = new Dbo();
-        let itoBlackListShiftPattern = {};
+        let blackListShiftPattern = {};
         try {
-            let results = await dboObj.getITOBlackListShiftPattern(year, month);
-            console.log("Get (" + year + "," + month + ") ITO black list shift pattern successfully!");
+            let results = await dboObj.getBlackListShiftPattern(year, month);
+            console.log("Get (" + year + "," + month + ") black list shift pattern successfully!");
             results.forEach(record => {
-                if (itoBlackListShiftPattern[record.ito_id] === undefined) {
-                    itoBlackListShiftPattern[record.ito_id] = [];
+                if (blackListShiftPattern[record.staff_id] === undefined) {
+                    blackListShiftPattern[record.staff_id] = [];
                 }
                 if (record.black_list_pattern){
-                    itoBlackListShiftPattern[record.ito_id].push(record.black_list_pattern);
+                    blackListShiftPattern[record.staff_id].push(record.black_list_pattern);
                 }                
             });
-            return itoBlackListShiftPattern;
+            return blackListShiftPattern;
         } catch (error) {
-            console.log("Something wrong when getting ITO black list shift pattern:" + error);
-            console.log(itoBlackListShiftPattern);
+            console.log("Something wrong when getting black list shift pattern:" + error);
+            console.log(blackListShiftPattern);
             throw (error);
         }
         finally {

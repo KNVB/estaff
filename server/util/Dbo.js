@@ -7,9 +7,102 @@ export default class Dbo {
     constructor() {
         this.#connection = mysql.createConnection(DbConfig);
     }
+    addStaffInfo = async staffInfo => {
+        try {
+            await this.#connection.promise().beginTransaction();
+            console.log("Add EMSTF info. transaction start.");
+            console.log("===============================");
+            console.log(staffInfo);
+            this.#sqlString = "insert into emstf_staff_info (available_Shift,duty_pattern,hko_ad_user,staff_Id,";
+            this.#sqlString += "join_date,leave_date,staff_name,staff_post,working_hour_per_day)";
+            this.#sqlString += "values(?,?,?,?,?,?,?,?,?)";
+            await this.#executeQuery(this.#sqlString, [
+                staffInfo.availableShift.join(","),
+                staffInfo.dutyPattern,
+                staffInfo.hkoAdUser,                
+                staffInfo.staffId,
+                staffInfo.joinDate,
+                staffInfo.leaveDate,
+                staffInfo.staffName,
+                staffInfo.staffPost,
+                staffInfo.workingHourPerDay
+            ]);
+            this.#sqlString = "insert into black_list_pattern (staff_Id, black_list_pattern) values(?,?)";
+            for (let i = 0; i < staffInfo.blackListedShiftPattern.length; i++) {
+                let shiftPattern = staffInfo.blackListedShiftPattern[i];
+                await this.#executeQuery(this.#sqlString, [staffInfo.staffId, shiftPattern]);
+            }
+            await this.#connection.promise().commit();
+            console.log("An EMSTF staff info is added successfully.");
+            console.log("===============================");
+            return true;
+        } catch (error) {
+            if (this.#connection) {
+                await this.#connection.promise().rollback();
+            }
+            throw error;
+        }
+    }
     getActiveShiftList = async () => {
         this.#sqlString = "select * from shift_info where active=1 order by shift_type";
         return await this.#executeQuery(this.#sqlString);
+    }
+    getBlackListShiftPattern = async (year, month) => {
+        let result = Utility.getStartEndDateString(year, month);
+        this.#sqlString = "select v.staff_id,black_list_pattern ";
+        this.#sqlString += "from ";
+        this.#sqlString += "(SELECT staff_id , staff_post";
+        this.#sqlString += "    FROM   emstf_staff_info ";
+        this.#sqlString += "    WHERE  join_date <=?";
+        this.#sqlString += "    AND leave_date >=?)as v ";
+        this.#sqlString += "left join ";
+        this.#sqlString += "(select staff_id, black_list_pattern ";
+        this.#sqlString += "from black_list_pattern) k ";
+        this.#sqlString += "on v.staff_id=k.staff_id ";
+        this.#sqlString += "order by Cast(replace(staff_post,\"ITO\",\"\") as unsigned)";
+        return await this.#executeQuery(this.#sqlString, [
+            result.endDateString, result.startDateString
+        ]);
+    }
+    getPreferredShiftList = async (year, month) => {
+        let result = Utility.getStartEndDateString(year, month);
+        this.#sqlString = "select  v.staff_id,preferred_shift,d from";
+        this.#sqlString += "(SELECT staff_id , staff_post ";
+        this.#sqlString += "    FROM   emstf_staff_info ";
+        this.#sqlString += "    WHERE  join_date <= ?";
+        this.#sqlString += "    AND leave_date >= ?)as v ";
+        this.#sqlString += "left join ";
+        this.#sqlString += "(SELECT staff_id,preferred_shift,day(shift_date) as d ";
+        this.#sqlString += "FROM preferred_shift ";
+        this.#sqlString += "where shift_date between ? and ?) as k ";
+        this.#sqlString += "on v.staff_id=k.staff_id ";
+        this.#sqlString += "order by Cast(replace(staff_post,\"ITO\",\"\") as unsigned), d";
+        return await this.#executeQuery(this.#sqlString, [
+            result.endDateString, result.startDateString,
+            result.startDateString, result.endDateString
+        ]);
+    }
+    getPreviousMonthShiftList = async (year, month, systemParam) => {
+        let result = Utility.getStartEndDateString(year, month);
+        //this.#sqlString = "select ito_id,shift from shift_record where shift_date >= ? and shift_date < ? order by ito_id,shift_date";
+
+        this.#sqlString = "SELECT v.staff_id, shift ";
+        this.#sqlString += "FROM   (SELECT staff_id ";
+        this.#sqlString += "FROM   emstf_staff_info ";
+        this.#sqlString += "WHERE  join_date <= ? ";
+        this.#sqlString += "AND  leave_date >= ?) as v ";
+        this.#sqlString += "LEFT JOIN shift_record ";
+        this.#sqlString += "ON shift_record.staff_id = v.staff_id ";
+        this.#sqlString += "AND shift_date >= ? ";
+        this.#sqlString += "AND shift_date < ? ";
+        this.#sqlString += "order by v.staff_id,shift_date";
+
+        let lastMonthEndDate = result.startDateString;
+        let tempDate = new Date(result.startDateString);
+        tempDate.setTime(tempDate.getTime() - systemParam.maxConsecutiveWorkingDay * 86400000);
+        let lastMonthStartDate = tempDate.toLocaleDateString("en-CA");
+        //console.log(result.startDateString, result.endDateString,lastMonthStartDate,lastMonthEndDate);
+        return await this.#executeQuery(this.#sqlString, [result.endDateString, result.startDateString, lastMonthStartDate, lastMonthEndDate]);
     }
     getNonStandardWorkingHourSummary = async (year, month) => {
         let result = Utility.getStartEndDateString(year, month);
@@ -86,7 +179,7 @@ export default class Dbo {
         this.#sqlString += "b.black_list_pattern,duty_pattern,";
         this.#sqlString += "DATE_FORMAT(join_date,\"%Y-%m-%d\") as join_date,";
         this.#sqlString += "DATE_FORMAT(leave_Date ,\"%Y-%m-%d\") as leave_date,";
-        this.#sqlString += "staff_post,working_hour_per_day ";
+        this.#sqlString += "staff_post,working_hour_per_day,hko_ad_user ";
         this.#sqlString += "from emstf_staff_info a ";
         this.#sqlString += "left join black_list_pattern b on a.staff_id = b.staff_id ";
         this.#sqlString += "order by leave_date desc,Cast(replace(staff_post,\"ITO\",\"\") as unsigned)";
@@ -95,6 +188,44 @@ export default class Dbo {
     getSystemParam = async () => {
         this.#sqlString = "select * from system_param order by param_type,param_key,param_value";
         return await this.#executeQuery(this.#sqlString);
+    }
+    updateStaffInfo = async staffInfo => {
+        try {
+            await this.#connection.promise().beginTransaction();
+            console.log("Update EMSD Staff (" + staffInfo.staffId + ") info. transaction start.");
+            console.log("===============================");
+            console.log(staffInfo);
+            this.#sqlString = "update emstf_staff_info set available_Shift=?,duty_pattern=?,hko_ad_user=?,join_date=?,";
+            this.#sqlString += "leave_date=?,staff_name=?,staff_post=?,working_hour_per_day=?";
+            this.#sqlString += " where staff_Id=?";
+            await this.#executeQuery(this.#sqlString, [
+                staffInfo.availableShift.join(","),
+                staffInfo.dutyPattern,
+                staffInfo.hkoAdUser,
+                staffInfo.joinDate,
+                staffInfo.leaveDate,
+                staffInfo.staffName,
+                staffInfo.staffPost,
+                staffInfo.workingHourPerDay,
+                staffInfo.staffId
+            ]);
+            this.#sqlString = "delete from black_list_pattern where staff_Id=?";
+            await this.#executeQuery(this.#sqlString, [staffInfo.staffId]);
+            this.#sqlString = "insert into black_list_pattern (staff_Id, black_list_pattern) values(?,?)";
+            for (let i = 0; i < staffInfo.blackListedShiftPattern.length; i++) {
+                let shiftPattern = staffInfo.blackListedShiftPattern[i];
+                await this.#executeQuery(this.#sqlString, [staffInfo.staffId, shiftPattern]);
+            }
+            await this.#connection.promise().commit();
+            console.log("EMSTF Staff (" + staffInfo.staffId + ")info updated successfully.");
+            console.log("===============================");
+            return true;
+        } catch (error) {
+            if (this.#connection) {
+                await this.#connection.promise().rollback();
+            }
+            throw error;
+        }
     }
     close() {
         this.#connection.end(err => {

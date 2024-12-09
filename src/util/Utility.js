@@ -41,11 +41,11 @@ export default class Utility {
         }
         return result;
     }
-    static isBlackListShift = (itoBlackListShiftPattern, itoId, newShift) => {
+    static isBlackListShift = (blackListShiftPattern, staffId, newShift) => {
         let result = false;
-        if (itoBlackListShiftPattern[itoId]) {
-            for (let i = 0; i < itoBlackListShiftPattern[itoId].length; i++) {
-                let blackListShift = itoBlackListShiftPattern[itoId][i];
+        if (blackListShiftPattern[staffId]) {
+            for (let i = 0; i < blackListShiftPattern[staffId].length; i++) {
+                let blackListShift = blackListShiftPattern[staffId][i];
                 if (newShift.indexOf(blackListShift) > -1) {
                     result = true;
                     break;
@@ -57,9 +57,9 @@ export default class Utility {
     /*
     static genITOStat = (activeShiftList, noOfWorkingDay, roster, nonStandardWorkingHourSummary) => {
         let result = {};
-        let itoIdList = Object.keys(roster);
-        for (let i = 0; i < itoIdList.length; i++) {
-            let itoRoster = structuredClone(roster[itoIdList[i]]);
+        let staffIdList = Object.keys(roster);
+        for (let i = 0; i < staffIdList.length; i++) {
+            let itoRoster = structuredClone(roster[staffIdList[i]]);
             itoRoster.actualWorkingDayCount = 0;
             itoRoster.actualWorkingHour = 0.0;
             itoRoster.aShiftCount = 0; itoRoster.bxShiftCount = 0;
@@ -103,8 +103,8 @@ export default class Utility {
             });            
             itoRoster.thisMonthBalance = itoRoster.actualWorkingHour - itoRoster.expectedWorkingHour;
             itoRoster.totalBalance += itoRoster.lastMonthBalance + itoRoster.thisMonthBalance;
-            itoRoster.totalBalance += nonStandardWorkingHourSummary[itoIdList[i]];
-            result[itoIdList[i]] = itoRoster;
+            itoRoster.totalBalance += nonStandardWorkingHourSummary[staffIdList[i]];
+            result[staffIdList[i]] = itoRoster;
         }
         return result;
     }*/
@@ -124,15 +124,15 @@ export default class Utility {
         result *= itoRoster.workingHourPerDay;
         return result;
     }
-    static getAllITOStat = (essentialShift, startDate, endDate, itoBlackListShiftPattern, itoIdList, systemParam, roster) => {
+    static getAllITOStat = (essentialShift, startDate, endDate, blackListShiftPattern, staffIdList, systemParam, roster) => {
         let essentialShiftList=new Set();
         let blackListShiftList = {};
         let duplicateShiftList = {};
         let vacantShiftList = {};
         let preShift = "";
-        itoIdList.forEach(itoId => {
-            blackListShiftList[itoId] = [];
-            duplicateShiftList[itoId] = [];
+        staffIdList.forEach(staffId => {
+            blackListShiftList[staffId] = [];
+            duplicateShiftList[staffId] = [];
         });
         for (let i = 0; i < essentialShift.length; i++) {
             essentialShiftList.add(essentialShift[i]);
@@ -140,10 +140,10 @@ export default class Utility {
         for (let i = startDate; i <= endDate; i++) {
             let vacantShift = essentialShift;
             let assignedShiftList = [];
-            itoIdList.forEach(itoId => {
-                let shiftInfoList = roster[itoId].shiftList[i];
-                //console.log("dateOfMonth="+i+"itoId="+itoId+",shiftList="+JSON.stringify(roster[itoId].shiftList[i]));
-                //console.log(itoId,shiftInfoList,i);
+            staffIdList.forEach(staffId => {
+                let shiftInfoList = roster[staffId].shiftList[i];
+                //console.log("dateOfMonth="+i+"staffId="+staffId+",shiftList="+JSON.stringify(roster[staffId].shiftList[i]));
+                //console.log(staffId,shiftInfoList,i);
                 shiftInfoList = shiftInfoList.split("+");
                 for (let j = 0; j < shiftInfoList.length; j++) {
                     let shiftInfo;
@@ -152,17 +152,17 @@ export default class Utility {
                     }else{
                         shiftInfo=shiftInfoList[j];
                     }
-                    //console.log("itoId="+itoId+",i="+i+",shiftInfo="+shiftInfo+",r="+essentialShiftList.has(shiftInfo))
+                    //console.log("staffId="+staffId+",i="+i+",shiftInfo="+shiftInfo+",r="+essentialShiftList.has(shiftInfo))
                     if (essentialShiftList.has(shiftInfo)){
                         vacantShift = vacantShift.replace(shiftInfo, "");
                         if (assignedShiftList.includes(shiftInfo)) {
-                            duplicateShiftList[itoId].push(i);
+                            duplicateShiftList[staffId].push(i);
                         } else {
                             assignedShiftList.push(shiftInfo);
                         }
-                        preShift = Utility.buildPreShift(i, essentialShift, roster[itoId], systemParam);
-                        if (Utility.isBlackListShift(itoBlackListShiftPattern, itoId, preShift + "," + shiftInfo)) {
-                            blackListShiftList[itoId].push(i);
+                        preShift = Utility.buildPreShift(i, essentialShift, roster[staffId], systemParam);
+                        if (Utility.isBlackListShift(blackListShiftPattern, staffId, preShift + "," + shiftInfo)) {
+                            blackListShiftList[staffId].push(i);
                         }
                     }
                 }
