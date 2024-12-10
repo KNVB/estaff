@@ -8,7 +8,7 @@ export default function SideBar({ navItemList, content }) {
     let showNav = () => {
         setNavCss("item showNav");
     }
-    document.title = "EMSTF Roster Admin. Page";
+    document.title = "EMSTF Admin. Page";
     return (
         <div className="m-0 p-0 bg-danger">
             <div className={navCss}>
@@ -21,7 +21,7 @@ export default function SideBar({ navItemList, content }) {
                 </div>
                 <div className="content">
                     <div className="d-flex justify-content-center m-0">
-                        <h1 className='m-0'>EMSTF Roster Admin. Page</h1>
+                        <h1 className='m-0'>EMSTF Admin. Page</h1>
                     </div>
                     {content}
                 </div>

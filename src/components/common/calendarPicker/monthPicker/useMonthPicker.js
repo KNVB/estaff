@@ -1,21 +1,21 @@
 import { useEffect, useReducer } from "react";
 import Utility from "../Utility";
-let genMonthTable = (tempResult, result,maxDate,minDate) => {
+let genMonthTable = (tempResult, result, maxDate, minDate) => {
     let monthRow = [], monthTable = { rowList: [] };
 
     for (let i = 0; i < 12; i++) {
-        let temp = {disabled:false, text: Utility.monthNameList[i], value: i };
-        let tempMonth=new Date(tempResult.getFullYear(),i,1);
-        let className=["month"];
+        let temp = { disabled: false, text: Utility.monthNameList[i], value: i };
+        let tempMonth = new Date(tempResult.getFullYear(), i, 1);
+        let className = ["month"];
         if ((result.getFullYear() === tempResult.getFullYear()) && (i === tempResult.getMonth())) {
             className.push("selectedItem");
         }
-        if (!Utility.isWithinTheRange(tempMonth,maxDate,minDate)){
-            temp.disabled=true;
+        if (!Utility.isWithinTheRange(tempMonth, maxDate, minDate)) {
+            temp.disabled = true;
             className.push("disabled");
         }
-        if (className.length >0) {
-            temp.className=className.join(" ");
+        if (className.length > 0) {
+            temp.className = className.join(" ");
         }
         monthRow.push(structuredClone(temp));
         if (((i + 1) % 3) === 0) {
@@ -26,7 +26,7 @@ let genMonthTable = (tempResult, result,maxDate,minDate) => {
     return monthTable;
 }
 let reducer = (state, action) => {
-    let result = { ...state };    
+    let result = { ...state };
     switch (action.type) {
         case "closePicker":
             result.isShowPicker = false;
@@ -47,7 +47,7 @@ let reducer = (state, action) => {
             break;
         case "updateValue":
             result.result = action.result;
-            result.tempResult = action.result;           
+            result.tempResult = action.result;
             result.isShowPicker = false;
             result.hasNextMonth = action.hasNextMonth;
             result.hasNextYear = action.hasNextYear;
@@ -87,7 +87,7 @@ export default function useMonthPicker(defaultValue, maxDate, minDate) {
 
         let nextMonth = new Date(newValue.getFullYear(), newValue.getMonth() + 1, 1);
         let nextYear = new Date(newValue.getFullYear() + 1, 0, 1);
-        let prevMonth = new Date(newValue.getFullYear(), newValue.getMonth(), 1);
+        let prevMonth = new Date(newValue.getFullYear(), newValue.getMonth() - 1, 1);
         /*******************************************************************
         * if the last day of the previous year does not within the range, *
         * the previous year button should be disabled.                    *
@@ -103,6 +103,7 @@ export default function useMonthPicker(defaultValue, maxDate, minDate) {
         let hasNextYear = (nextYear >= minDate && nextYear <= maxDate)
         let hasPrevMonth = (prevMonth >= minDate && prevMonth <= maxDate);
         let hasPrevYear = (prevYear >= minDate && prevYear <= maxDate);
+        
         return {
             hasNextMonth, hasNextYear,
             hasPrevMonth, hasPrevYear
@@ -118,7 +119,7 @@ export default function useMonthPicker(defaultValue, maxDate, minDate) {
         }
         if (Utility.isNull(minDate)) {
             minDate = new Date();
-            minDate.setFullYear(maxDate.getFullYear() - 100);
+            minDate.setFullYear(minDate.getFullYear() - 100);
         }
         let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = genPreNext(defaultValue, maxDate, minDate);
         updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, maxDate, minDate, "result": defaultValue ?? new Date(), "type": "init" });

@@ -16,6 +16,7 @@ export default class Roster {
                     preferredShiftList[record.staff_id][record.d] = record.preferred_shift;
                 }
             });
+            console.log("Get (" + year + "," + month + ") Preferred Shift List successfully!");
             return preferredShiftList;
         } catch (error) {
             console.log("Something wrong when getting Preferred shift list:" + error);
@@ -85,6 +86,7 @@ export default class Roster {
                     }
                 }
             });
+            console.log("Get (" + year + "," + month + ") Roster List successfully!");
             return staffRosterList;
         }
         catch (error) {

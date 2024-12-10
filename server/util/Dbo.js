@@ -104,6 +104,36 @@ export default class Dbo {
         //console.log(result.startDateString, result.endDateString,lastMonthStartDate,lastMonthEndDate);
         return await this.#executeQuery(this.#sqlString, [result.endDateString, result.startDateString, lastMonthStartDate, lastMonthEndDate]);
     }
+    getNonStandardWorkingHourList = async (year, month) => {
+        let result = Utility.getStartEndDateString(year, month);
+        this.#sqlString = "select v.staff_id,staff_post,staff_name,";
+        this.#sqlString += "k.end_Time,k.start_time,k.no_of_hour_applied_for,";
+        this.#sqlString += "description,id,status,claim_type ";
+        this.#sqlString += "from ";
+        this.#sqlString += "		(SELECT ";
+        this.#sqlString += "               staff_id,";
+        this.#sqlString += "               staff_name,";
+        this.#sqlString += "               staff_post";
+        this.#sqlString += "        FROM   emstf_staff_info";
+        this.#sqlString += "        WHERE  join_date <= ?";
+        this.#sqlString += "               AND leave_date >= ?) v";
+        this.#sqlString += "		left join ";
+        this.#sqlString += "(SELECT  *";
+        this.#sqlString += " FROM non_standard_working_hour";
+        this.#sqlString += " where ";
+        this.#sqlString += " start_time  <= ? ";
+        this.#sqlString += " and end_time>= ?)k";
+        this.#sqlString += "			on v.staff_id=k.staff_id ";
+        this.#sqlString += " order by  Cast(replace(staff_post,\"ITO\",\"\") as unsigned)";
+        return await this.#executeQuery(this.#sqlString,
+            [
+                result.endDateString,
+                result.startDateString,
+                result.endDateString,
+                result.startDateString
+            ]
+        );
+    }
     getNonStandardWorkingHourSummary = async (year, month) => {
         let result = Utility.getStartEndDateString(year, month);
         this.#sqlString = "select v.staff_id,sum(k.no_of_hour_applied_for) as 'sum'";

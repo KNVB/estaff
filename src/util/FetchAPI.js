@@ -31,7 +31,10 @@ export default class FetchAPI {
         return (await this.#secureFetch(genExcelData, "post", "/privateAPI/exportRosterDataToExcel", "blob"));
     }
     getActiveShiftList = async () => {
-        return (await this.#fetch(null, "get", "/privateAPI/getActiveShiftList"));
+        return (await this.#secureFetch(null, "get", "/privateAPI/getActiveShiftList"));
+    }
+    getNonStandardWorkingHourList=async (year,month)=>{
+        return (await this.#secureFetch({ year: year, month: month }, "get", "/privateAPI/getNonStandardWorkingHourList"));
     }
     getRosterViewerData = async (year, month) => {
         return (await this.#fetch({ year: year, month: month }, "get", "/publicAPI/getRosterViewerData"));

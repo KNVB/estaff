@@ -21,13 +21,13 @@ export default function ItemList(){
     return (
         <ul className='itemList'>
             <li>
-                <a href="/rosterWeb/admin/rosterScheduler">Roster Scheduler</a>
+                <a href="/admin/rosterScheduler">Roster Scheduler</a>
             </li>
             <li>
-                <a href="/rosterWeb/admin/staffManagement/list">Staff Management</a>
+                <a href="/admin/staffManagement/list">Staff Management</a>
             </li>
             <li>
-                <a href="/rosterWeb/admin/nonStandardWorkingHourManagement/list">Non Standard Working Hours Management</a>
+                <a href="/admin/nonStandardWorkingHourManagement/list">Non Standard Working Hours Management</a>
             </li>
             <li>
                 <span className='logout' onClick={logout}>

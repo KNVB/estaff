@@ -23,6 +23,9 @@ export default function PrivateAPI(adminUtil, systemParam) {
             case "getActiveShiftList":
                 sendResponse(res, getActiveShiftList);
                 break
+            case "getNonStandardWorkingHourList":
+                sendResponse(res, getNonStandardWorkingHourList, { month: req.query.month, "year": req.query.year });
+                break;
             case "getStaffList":
                 sendResponse(res, getStaffList);
                 break;
@@ -73,6 +76,10 @@ let getActiveShiftList = async () => {
     let shiftInfo = new ShiftInfo();
     await shiftInfo.init();
     return shiftInfo.activeShiftList;
+}
+let getNonStandardWorkingHourList = async params => {
+    let nonStandardWorkingHour =new NonStandardWorkingHour();
+    return await nonStandardWorkingHour.getNonStandardWorkingHourList(params.year, params.month);
 }
 let getRosterSchedulerData = async params => {
     let roster = new Roster();
