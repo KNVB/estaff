@@ -48,8 +48,8 @@ export default function useRosterViewer() {
         }
         getData();
     }, []);
-    let getShiftCssClassName = shiftType => {
-        return itemList.rosterViewerData.getShiftCssClassName(shiftType);
+    let getShiftCssClassName = (staffId, shiftType) => {
+        return itemList.rosterViewerData.getShiftCssClassName(staffId, shiftType);
     }
     let updateRosterMonth = async newRosterMonth => {
         try {

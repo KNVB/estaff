@@ -14,10 +14,10 @@ export default function RosterRow({ calendarDateList, dataAction, highLightActio
     function handleMouseLeaveEvent(e) {
         e.preventDefault();
         highLightAction.updateHighLightCell(-1, -1);
-    }    
+    }
     calendarDateList.forEach((calendarDate, index) => {
         let shift = roster.shiftList[index + 1];
-        className = dataAction.getShiftCssClassName(shift);
+        className = dataAction.getShiftCssClassName(staffId, shift);
         shiftCellList.push(
             <ShiftCell
                 cssClassName={className}

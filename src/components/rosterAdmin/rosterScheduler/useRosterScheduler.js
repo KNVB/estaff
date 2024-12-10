@@ -84,8 +84,8 @@ export default function useRosterScheduler() {
     let getCopyDataRowCount = () => {
         return itemList.rosterSchedulerData.getCopyDataRowCount();
     }
-    let getShiftCssClassName = shiftType => {
-        return itemList.rosterSchedulerData.getShiftCssClassName(shiftType);
+    let getShiftCssClassName = (staffId, shiftType) => {
+        return itemList.rosterSchedulerData.getShiftCssClassName(staffId, shiftType);
     }
     let handleEscKeyEvent = () => {
         itemList.rosterSchedulerData.clearCopiedData();
@@ -117,10 +117,13 @@ export default function useRosterScheduler() {
     }
     let saveRosterToDB = async () => {
         try {
+            showLoading();
             await itemList.rosterSchedulerData.saveToDB();
             alert("Roster Data is saved to DB successfully.");
         } catch (error) {
             updateItemList({ "error": error, "type": "setError" });
+        } finally {
+            hideLoading();
         }
     }
     let showLoading = () => {
@@ -136,6 +139,8 @@ export default function useRosterScheduler() {
         } catch (error) {
             console.log(error);
             updateItemList({ "error": error, "type": "setError" });
+        } finally {
+            hideLoading();
         }
     }
     let updateShiftFromAutoPlan = planResult => {

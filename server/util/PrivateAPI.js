@@ -1,6 +1,7 @@
 import Express from 'express';
 import NonStandardWorkingHour from "../classes/NonStandardWorkingHour.js";
 import Roster from "../classes/Roster.js";
+import RosterExporter from "./RosterExporter.js";
 import ShiftInfo from "../classes/ShiftInfo.js";
 import StaffInfo from '../classes/StaffInfo.js';
 export default function PrivateAPI(adminUtil, systemParam) {
@@ -24,7 +25,7 @@ export default function PrivateAPI(adminUtil, systemParam) {
                 break
             case "getStaffList":
                 sendResponse(res, getStaffList);
-                break;            
+                break;
             case "getRosterSchedulerData":
                 sendResponse(res, getRosterSchedulerData, { month: req.query.month, "systemParam": systemParam, "year": req.query.year });
                 break;
@@ -41,27 +42,21 @@ export default function PrivateAPI(adminUtil, systemParam) {
             case "updateStaffInfo":
                 sendResponse(res, updateStaffInfo, req.body.staffInfo);
                 break;
-            /*        
-                case "exportRosterDataToExcel":
-                    try {
-                        let rosterExporter = new RosterExporter();
-                        //console.log(genExcelData);
-                        let outputFileName = (req.body.genExcelData.year % 100) * 100 + req.body.genExcelData.month + ".xlsx";
-    
-                        res.setHeader("Content-disposition", "attachment; filename=" + outputFileName);
-                        res.setHeader("Content-type", 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                        res.send(await rosterExporter.export(req.body.genExcelData));
-                    } catch (error) {
-                        console.log(error);
-                        res.status(400).send(error.message);
-                    }
-                    break;
-                case "updateITO":
-                    sendResponse(res, updateITO, req.body.ito);
-                    break;
-                case "updateRoster":
-                    sendResponse(res, updateRoster,req.body);
-                    break;*/
+            case "updateRoster":
+                sendResponse(res, updateRoster, req.body);
+                break;
+            case "exportRosterDataToExcel":
+                try {
+                    let rosterExporter = new RosterExporter();
+                    let outputFileName = (req.body.genExcelData.year % 100) * 100 + req.body.genExcelData.month + ".xlsx";
+                    res.setHeader("Content-disposition", "attachment; filename=" + outputFileName);
+                    res.setHeader("Content-type", 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                    res.send(await rosterExporter.export(req.body.genExcelData));
+                } catch (error) {
+                    console.log(error);
+                    res.status(400).send(error.message);
+                }
+                break;
             default:
                 next();
                 break;
@@ -99,6 +94,10 @@ let getRosterSchedulerData = async params => {
 let getStaffList = async () => {
     let staffInfo = new StaffInfo();
     return await staffInfo.getStaffList();
+}
+let updateRoster = async data => {
+    let roster = new Roster();
+    return await roster.updateRoster(data);
 }
 let updateStaffInfo = async staffInfo => {
     let staffInfoUtil = new StaffInfo();

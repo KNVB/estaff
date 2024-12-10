@@ -54,61 +54,6 @@ export default class Utility {
         }
         return result;
     }
-    /*
-    static genITOStat = (activeShiftList, noOfWorkingDay, roster, nonStandardWorkingHourSummary) => {
-        let result = {};
-        let staffIdList = Object.keys(roster);
-        for (let i = 0; i < staffIdList.length; i++) {
-            let itoRoster = structuredClone(roster[staffIdList[i]]);
-            itoRoster.actualWorkingDayCount = 0;
-            itoRoster.actualWorkingHour = 0.0;
-            itoRoster.aShiftCount = 0; itoRoster.bxShiftCount = 0;
-            itoRoster.cShiftCount = 0; itoRoster.dxShiftCount = 0;
-            itoRoster.expectedWorkingHour = itoRoster.workingHourPerDay * noOfWorkingDay;
-            itoRoster.totalBalance = 0;
-            Object.keys(itoRoster.shiftList).forEach(date => {
-                let item = itoRoster.shiftList[date];
-                let shiftTypeList = item.split("+");
-                shiftTypeList.forEach(shiftType => {
-                    if (itoRoster.availableShiftList.includes(shiftType)) {
-                        if (activeShiftList[shiftType]) {
-                            itoRoster.actualWorkingHour += activeShiftList[shiftType].duration;
-                            switch (shiftType) {
-                                case "a":
-                                    itoRoster.aShiftCount++;
-                                    itoRoster.actualWorkingDayCount++;
-                                    break;
-                                case "b":
-                                case "b1":
-                                    itoRoster.bxShiftCount++;
-                                    itoRoster.actualWorkingDayCount++
-                                    break;
-                                case "c":
-                                    itoRoster.cShiftCount++;
-                                    itoRoster.actualWorkingDayCount++
-                                    break;
-                                case "d":
-                                case "d1":
-                                case "d2":
-                                case "d3":
-                                    itoRoster.dxShiftCount++;
-                                    itoRoster.actualWorkingDayCount++
-                                    break;
-                                default:
-                                    break
-                            }
-                        }
-                    }
-                });
-            });            
-            itoRoster.thisMonthBalance = itoRoster.actualWorkingHour - itoRoster.expectedWorkingHour;
-            itoRoster.totalBalance += itoRoster.lastMonthBalance + itoRoster.thisMonthBalance;
-            itoRoster.totalBalance += nonStandardWorkingHourSummary[staffIdList[i]];
-            result[staffIdList[i]] = itoRoster;
-        }
-        return result;
-    }*/
-
     static getExpectedWorkingHour = (itoRoster, firstDayObj, monthlyCalendar) => {
         let result = monthlyCalendar.noOfWorkingDay;
         if (itoRoster.joinDate > firstDayObj) {
@@ -125,7 +70,7 @@ export default class Utility {
         return result;
     }
     static getAllITOStat = (essentialShift, startDate, endDate, blackListShiftPattern, staffIdList, systemParam, roster) => {
-        let essentialShiftList=new Set();
+        let essentialShiftList = new Set();
         let blackListShiftList = {};
         let duplicateShiftList = {};
         let vacantShiftList = {};
@@ -142,32 +87,37 @@ export default class Utility {
             let assignedShiftList = [];
             staffIdList.forEach(staffId => {
                 let shiftInfoList = roster[staffId].shiftList[i];
-                //console.log("dateOfMonth="+i+"staffId="+staffId+",shiftList="+JSON.stringify(roster[staffId].shiftList[i]));
-                //console.log(staffId,shiftInfoList,i);
+                
                 shiftInfoList = shiftInfoList.split("+");
                 for (let j = 0; j < shiftInfoList.length; j++) {
                     let shiftInfo;
-                    if (shiftInfoList[j] === "b1"){
-                        shiftInfo="b";
-                    }else{
-                        shiftInfo=shiftInfoList[j];
+                    if (shiftInfoList[j] === "b1") {
+                        shiftInfo = "b";
+                    } else {
+                        shiftInfo = shiftInfoList[j];
                     }
-                    //console.log("staffId="+staffId+",i="+i+",shiftInfo="+shiftInfo+",r="+essentialShiftList.has(shiftInfo))
-                    if (essentialShiftList.has(shiftInfo)){
+                    //if the shift is an essential shift    
+                    if (essentialShiftList.has(shiftInfo)) {
                         vacantShift = vacantShift.replace(shiftInfo, "");
                         if (assignedShiftList.includes(shiftInfo)) {
                             duplicateShiftList[staffId].push(i);
                         } else {
                             assignedShiftList.push(shiftInfo);
                         }
-                        preShift = Utility.buildPreShift(i, essentialShift, roster[staffId], systemParam);
-                        if (Utility.isBlackListShift(blackListShiftPattern, staffId, preShift + "," + shiftInfo)) {
-                            blackListShiftList[staffId].push(i);
+
+                        //if no black listed shift found in previous shift
+                        if (!blackListShiftList[staffId].includes(i - 1)) {
+                            preShift = Utility.buildPreShift(i, essentialShift, roster[staffId], systemParam);
+                            //check if the black listed shift found
+                            if (Utility.isBlackListShift(blackListShiftPattern, staffId, preShift + "," + shiftInfo)) {
+                                blackListShiftList[staffId].push(i);
+                            }
                         }
                     }
                 }
             });
             //console.log("vacantShift="+vacantShift);
+            // Check if vacant shift exists
             if (vacantShift !== '') {
                 vacantShiftList[i] = vacantShift;
             }

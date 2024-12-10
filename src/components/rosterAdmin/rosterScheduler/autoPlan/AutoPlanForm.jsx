@@ -8,7 +8,7 @@ export default function AutoPlanForm({ rosterSchedulerData, dataAction }) {
     }
     if (isReady) {        
         return (
-            <table className="mt-1">
+            <table className="autoPlanForm mt-1">
                 <thead>
                     <tr>
                         <td>Auto Planning Start From:</td>

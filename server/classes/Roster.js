@@ -95,4 +95,20 @@ export default class Roster {
             dbo.close();
         }
     }
+    updateRoster = async (data) => {
+        let rosterMonth = new Date(data.rosterMonth);
+        let roster = data.roster;
+        let preferredShiftList = data.preferredShiftList;
+        let dbo = new Dbo();
+        try {
+            let result = await dbo.updateRoster(preferredShiftList, roster,rosterMonth);
+            return result;
+        } catch (error) {
+            console.log("An error occur when saving roster data from DB.");
+            console.log(error);
+            throw (error);
+        } finally {
+            dbo.close();
+        }
+    }
 }

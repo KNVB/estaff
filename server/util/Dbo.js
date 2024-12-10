@@ -19,7 +19,7 @@ export default class Dbo {
             await this.#executeQuery(this.#sqlString, [
                 staffInfo.availableShift.join(","),
                 staffInfo.dutyPattern,
-                staffInfo.hkoAdUser,                
+                staffInfo.hkoAdUser,
                 staffInfo.staffId,
                 staffInfo.joinDate,
                 staffInfo.leaveDate,
@@ -219,6 +219,50 @@ export default class Dbo {
             await this.#connection.promise().commit();
             console.log("EMSTF Staff (" + staffInfo.staffId + ")info updated successfully.");
             console.log("===============================");
+            return true;
+        } catch (error) {
+            if (this.#connection) {
+                await this.#connection.promise().rollback();
+            }
+            throw error;
+        }
+    }
+    updateRoster = async (preferredShiftList, roster, rosterMonth) => {
+        try {
+            let month = rosterMonth.getMonth() + 1;
+            let year = rosterMonth.getFullYear();
+            await this.#connection.promise().beginTransaction();
+            console.log("Update roster data transaction start.");
+            console.log("===============================");
+            console.log("year=" + rosterMonth.getFullYear() + ",month=" + (rosterMonth.getMonth() + 1));
+            console.log(rosterMonth.toLocaleDateString("en-CA"));
+            for (const [staffId, staffRoster] of Object.entries(roster)) {
+                this.#sqlString = "replace into last_month_balance (staff_id,shift_month,balance) values (?,?,?)";
+                await this.#executeQuery(this.#sqlString, [staffId, rosterMonth.toLocaleDateString("en-CA"), staffRoster.thisMonthBalance]);
+                this.#sqlString = "delete from shift_record where staff_id=? and month(shift_date)=? and year(shift_date)=?";
+                await this.#executeQuery(this.#sqlString, [staffId, month, year]);
+                console.log("delete " + staffId + " shift record for:" + month + "/" + year);
+                console.log(staffId + " Shift List:");
+                this.#sqlString = "replace into shift_record (staff_id,shift_date,shift,state) values (?,?,?,?)";
+                let dateList = Object.keys(staffRoster.shiftList);
+                for (let i = 0; i < dateList.length; i++) {
+                    let shiftList = staffRoster.shiftList[dateList[i]].split("+");
+                    for (let j = 0; j < shiftList.length; j++) {
+                        await this.#executeQuery(this.#sqlString, [staffId, year + "-" + month + "-" + dateList[i], shiftList[j], "A"]);
+                    }
+                }
+                console.log("update " + staffId + " shift record for:" + month + "/" + year);
+                this.#sqlString = "delete from preferred_shift where staff_id=? and month(shift_date)=? and year(shift_date)=?";
+                console.log("delete " + staffId + " preferred shift data for:" + month + "/" + year);
+                this.#sqlString = "replace into preferred_shift (staff_id,preferred_shift,shift_date) values (?,?,?)";
+                for (let date in preferredShiftList[staffId]) {
+                    await this.#executeQuery(this.#sqlString, [staffId, preferredShiftList[staffId][date], year + "-" + month + "-" + date]);
+                }
+                console.log("update " + staffId + " preferred shift record for:" + month + "/" + year);
+                console.log(staffId + " roster data update completed.");
+                console.log("===============================");
+            }
+            await this.#connection.promise().commit();
             return true;
         } catch (error) {
             if (this.#connection) {

@@ -10,7 +10,7 @@ export default function StaffShiftRow({ calendarDateList, dataAction, eventHandl
         shift = '';
         if (previousMonthShiftList && (previousMonthShiftList[i] !== undefined)) {
             shift = previousMonthShiftList[i];
-            className = dataAction.getShiftCssClassName(shift);
+            className = dataAction.getShiftCssClassName(staffId,shift);
         }
         shiftCellList.push(
             <ShiftCell
@@ -32,7 +32,7 @@ export default function StaffShiftRow({ calendarDateList, dataAction, eventHandl
                 className.push("duplicatedShift");
                 break;
             default:
-                className.push(dataAction.getShiftCssClassName(shift));
+                className.push(dataAction.getShiftCssClassName(staffId,shift));
                 break            
         }
         shiftCellList.push(
