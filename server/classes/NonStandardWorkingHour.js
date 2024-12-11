@@ -22,9 +22,9 @@ export default class NonStandardWorkingHour {
                         claimType: record.claim_type,
                         description: record.description,
                         durationInHour: record.no_of_hour_applied_for,
-                        endTime: new Date(record.end_time),
+                        endTime: record.end_time,
                         id: record.id,
-                        startTime
+                        startTime:record.start_time
                     }
                 }
             });

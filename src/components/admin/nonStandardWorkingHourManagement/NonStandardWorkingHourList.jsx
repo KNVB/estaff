@@ -3,7 +3,7 @@ import Loading from "../../common/Loading.jsx";
 import NonStandardWorkingHourTable from "./NonStandardWorkingHourTable.jsx";
 import useNonStandardWorkingHourList from "./useNonStandardWorkingHourList.jsx";
 export default function NonStandardWorkingHourList() {
-    const { error, isLoading, list, month, year } = useNonStandardWorkingHourList();
+    const { error, isLoading, list, month, year,updatePeriod } = useNonStandardWorkingHourList();
     let result;
     switch (true) {
         case (error):
@@ -14,9 +14,8 @@ export default function NonStandardWorkingHourList() {
             break;
         default:
             document.title = "EMSTF Staff Non Standard Working Hour List";
-            result = <NonStandardWorkingHourTable list={list} month={month} year={year} />
+            result = <NonStandardWorkingHourTable list={list} month={month} year={year} updatePeriod={updatePeriod}/>
             break;
-
     }
     return result;
 }

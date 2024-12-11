@@ -32,8 +32,8 @@ export default function useNonStandardWorkingHourList() {
                 let now = new Date();
                 //let year = now.getFullYear();
                 //let month = now.getMonth();
-                let month=8;
-                let year=2024;
+                let month = 8;
+                let year = 2024;
 
                 let list = await itemList.nonStandardWorkingHourUtil.getNonStandardWorkingHourList(year, month);
                 updateItemList({
@@ -49,11 +49,29 @@ export default function useNonStandardWorkingHourList() {
         }
         getData();
     }, []);
+    async function updatePeriod(period) {
+        let month = period.getMonth();
+        let year = period.getFullYear();
+        try {
+            let list = await itemList.nonStandardWorkingHourUtil.getNonStandardWorkingHourList(year, month);
+            updateItemList({
+                month,
+                list,
+                type: "init",
+                year
+            });
+        } catch (error) {
+            console.log(error);
+            updateItemList({ "error": error, "type": "setError" });
+        }    
+
+    }
     return {
-        error:itemList.error,
-        isLoading:itemList.isLoading,
-        list:itemList.list,
-        month:itemList.month,
-        year:itemList.year
+        error: itemList.error,
+        isLoading: itemList.isLoading,
+        list: itemList.list,
+        month: itemList.month,
+        year: itemList.year,
+        updatePeriod
     }
 }
