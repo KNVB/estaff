@@ -152,7 +152,8 @@ export default class Dbo {
         this.#sqlString += " and end_time>= ?)k";
         this.#sqlString += "			on v.staff_id=k.staff_id ";
         this.#sqlString += " group by v.staff_id ";
-        this.#sqlString += " order by Cast(replace(staff_post,\"ITO\",\"\") as unsigned)";
+        this.#sqlString += "order by left(staff_post,1)  desc ,cast(replace(staff_post,\"SITO\",\"\") as unsigned),";
+        this.#sqlString += "cast(replace(staff_post,\"ITO\",\"\") as unsigned)";
         return await this.#executeQuery(this.#sqlString,
             [
                 result.endDateString,
@@ -191,7 +192,8 @@ export default class Dbo {
         this.#sqlString += "	   LEFT JOIN last_month_balance";
         this.#sqlString += "			  ON v.staff_id = last_month_balance.staff_id";
         this.#sqlString += "				 AND shift_month = ?";
-        this.#sqlString += "ORDER  BY Cast(replace(staff_post,\"ITO\",\"\") as unsigned),";
+        this.#sqlString += "ORDER  BY duty_pattern,left(staff_post,1)  desc ,cast(replace(staff_post,\"SITO\",\"\") as unsigned),";
+        this.#sqlString += "          cast(replace(staff_post,\"ITO\",\"\") as unsigned),";
         this.#sqlString += "		  shift_date,";
         this.#sqlString += "		  shift";
         return await this.#executeQuery(this.#sqlString,
@@ -212,7 +214,8 @@ export default class Dbo {
         this.#sqlString += "staff_post,working_hour_per_day,hko_ad_user ";
         this.#sqlString += "from emstf_staff_info a ";
         this.#sqlString += "left join black_list_pattern b on a.staff_id = b.staff_id ";
-        this.#sqlString += "order by leave_date desc,Cast(replace(staff_post,\"ITO\",\"\") as unsigned)";
+        this.#sqlString += "order by leave_date desc,left(staff_post,1)  desc ,cast(replace(staff_post,\"SITO\",\"\") as unsigned),";
+        this.#sqlString += "cast(replace(staff_post,\"ITO\",\"\") as unsigned)";
         return await this.#executeQuery(this.#sqlString);
     }
     getSystemParam = async () => {

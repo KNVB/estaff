@@ -40,7 +40,7 @@ export default class StaffInfo{
                 }else{
                     result[record.staff_id].blackListedShiftPattern.push(record.black_list_pattern);
                 }
-            });
+            });            
             return result;
         } catch (error) {
             console.log("Something wrong when getting Staff list:" + error);
