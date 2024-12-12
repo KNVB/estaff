@@ -14,7 +14,7 @@
     "testRoster": "cross-env NODE_ENV=development node ./server/test/TestRoster.js",
     "testShiftInfo": "cross-env NODE_ENV=development node ./server/test/TestShiftInfo.js",
     "testStaffInfo": "cross-env NODE_ENV=development node ./server/test/TestStaffInfo.js",
-    "testSystemParam": "cross-env NODE_ENV=development node ./server/test/TestSystemParam.js"
+    "testSystemParam": "cross-env NODE_ENV=development node ./server/test/TestSystemParam.js"    
   },
   "dependencies": {
     "axios": "^1.7.9",

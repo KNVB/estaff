@@ -24,6 +24,9 @@ export default class FetchAPI {
             }
         );
     }
+    addNonStandardWorkingHourRecord=async record=>{
+        return (await this.#secureFetch({ "record":record}, "post", "/privateAPI/addNonStandardWorkingHourRecord"));
+    }
     addStaffInfo = async staffInfo => {
         return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/addStaffInfo"));
     }

@@ -1,6 +1,20 @@
 import Dbo from "../util/Dbo.js";
+import Utility from "../util/Utility.js";
 export default class NonStandardWorkingHour {
     constructor() {
+    }
+    addNonStandardWorkingHourRecord=async record=>{
+        let dbo = new Dbo();
+        record.id=Utility.getUID();
+        try{
+            return await dbo.addNonStandardWorkingHourRecord(record);
+        }catch (error) {
+            console.log("Something wrong when adding a Non Standard Working Hour Record to DB:" + error);
+            throw (error);
+        }
+        finally {
+            dbo.close();
+        };
     }
     getNonStandardWorkingHourList = async (year, month) => {
         let dbo = new Dbo();

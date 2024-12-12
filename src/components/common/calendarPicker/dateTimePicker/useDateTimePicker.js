@@ -46,7 +46,7 @@ export default function useDateTimePicker(defaultValue) {
             "November",
             "December"
         ],
-        monthlyCalendar: genMonthlyCalendar(defaultValue ?? new Date()),
+        monthlyCalendar: Utility.genMonthlyCalendar(defaultValue ?? new Date()),
         result: (defaultValue ?? new Date()),
         tempValue: (defaultValue ?? new Date()),
         weekDayNameList: ["Su", "M", "T", "W", "Th", "F", "S"]

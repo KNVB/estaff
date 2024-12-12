@@ -13,4 +13,13 @@ export default class Utility {
         let endDateString = tempDate.toLocaleDateString("en-CA");
         return { "startDateString": startDateString, "endDateString": endDateString };
     }
+    static getUID(){
+        let characters="abcdefghijklmnopqrstuvwxyz0123456789";
+        let uid="";
+        for (let i=0;i<10;i++){
+            let index=Math.floor(Math.random() * (characters.length-1));
+            uid+=characters[index];
+        }
+        return uid;    
+    }    
 }

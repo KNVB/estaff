@@ -69,7 +69,7 @@ export default class Utility{
             weekRow.push({ className: null, value: "" });
         }
         for (let i = firstWeekday; i <= 6; i++) {
-            weekRow.push(genDateObj(date++, i, selectedDate));
+            weekRow.push(Utility.genDateObj(date++, i, selectedDate));
         }
         monthlyCalendar.rowList.push(structuredClone(weekRow));
         weekRow = [];
@@ -77,7 +77,7 @@ export default class Utility{
         temp = new Date(selectedDate.getTime());
         while (date <= monthEndDate) {
             temp.setDate(date);
-            weekRow.push(genDateObj(date++, temp.getDay(), selectedDate));
+            weekRow.push(Utility.genDateObj(date++, temp.getDay(), selectedDate));
             if (temp.getDay() === 6) {
                 monthlyCalendar.rowList.push(structuredClone(weekRow));
                 weekRow = [];

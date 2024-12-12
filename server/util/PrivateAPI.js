@@ -39,6 +39,9 @@ export default function PrivateAPI(adminUtil, systemParam) {
     });
     router.post('/:action', async (req, res, next) => {
         switch (req.params.action) {
+            case "addNonStandardWorkingHourRecord":
+                sendResponse(res, addNonStandardWorkingHourRecord, req.body.record);
+                break;
             case "addStaffInfo":
                 sendResponse(res, addStaffInfo, req.body.staffInfo);
                 break;
@@ -68,6 +71,10 @@ export default function PrivateAPI(adminUtil, systemParam) {
     return router;
 }
 //====================================================================================================================================
+let addNonStandardWorkingHourRecord=async record=>{
+    let nonStandardWorkingHour =new NonStandardWorkingHour();
+    return await nonStandardWorkingHour.addNonStandardWorkingHourRecord(record);
+}
 let addStaffInfo = async staffInfo => {
     let staffInfoObj = new StaffInfo();
     return await staffInfoObj.addStaffInfo(staffInfo);

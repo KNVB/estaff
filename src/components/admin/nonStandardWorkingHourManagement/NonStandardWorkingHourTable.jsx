@@ -19,26 +19,29 @@ export default function NonStandardWorkingHourTable({ list, month, year, updateP
                     <td className='border'>{record.description}</td>
                     <td className='border'>{record.durationInHour}</td>
                     <td className='border'>
-                        <Link
-                            state={{
-                                "records": {
-                                    claimType: record.claimType,
-                                    description: record.description,
-                                    durationInHour: record.durationInHour,
-                                    "id": record.id,
-                                    "staffId": staffId,
-                                    staffName: item.staffName,
-                                    staffPost: item.staffPost,
-                                    startTime:record.startTime,
-                                    endTime:record.endTime
-                                }
-                            }}
-                            to="../nonStandardWorkingHourManagement/edit">
-                            <Button variant="warning">
-                                <Pencil />
-                                Edit
-                            </Button>
-                        </Link>
+                        {
+                            (record.claimType === "training") &&
+                            <Link
+                                state={{
+                                    "record": {
+                                        claimType: record.claimType,
+                                        "description": record.description,
+                                        durationInHour: record.durationInHour,
+                                        "id": record.id,
+                                        "staffId": staffId,
+                                        staffName: item.staffName,
+                                        staffPost: item.staffPost,
+                                        startTime: new Date(record.startTime),
+                                        endTime: new Date(record.endTime)
+                                    }
+                                }}
+                                to="../nonStandardWorkingHourManagement/edit">
+                                <Button variant="warning">
+                                    <Pencil />
+                                    Edit
+                                </Button>
+                            </Link>
+                        }
                     </td>
                 </tr>
             );
@@ -69,11 +72,15 @@ export default function NonStandardWorkingHourTable({ list, month, year, updateP
                         <td className='border text-end' colSpan={6}>
                             <Link
                                 state={{
-                                    "records": {
+                                    "record": {                                        
+                                        description:"",
+                                        durationInHour: 0,
+                                        endTime: new Date(),
                                         "id": -1,
                                         "staffId": staffId,
                                         staffName: item.staffName,
-                                        staffPost: item.staffPost
+                                        staffPost: item.staffPost,
+                                        startTime: new Date()
                                     }
                                 }}
                                 to="../nonStandardWorkingHourManagement/add">

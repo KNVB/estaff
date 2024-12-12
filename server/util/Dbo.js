@@ -7,6 +7,23 @@ export default class Dbo {
     constructor() {
         this.#connection = mysql.createConnection(DbConfig);
     }
+    addNonStandardWorkingHourRecord = async record => {
+        try {
+            await this.#connection.promise().beginTransaction();
+            console.log("Add Non Standard Working Hour Record transaction start.");
+            console.log("===============================");
+            console.log(record);
+            await this.#connection.promise().commit();
+            console.log("An Non Standard Working Hour Record is added successfully.");
+            console.log("===============================");
+            return true;
+        } catch (error) {
+            if (this.#connection) {
+                await this.#connection.promise().rollback();
+            }
+            throw error;
+        }
+    }
     addStaffInfo = async staffInfo => {
         try {
             await this.#connection.promise().beginTransaction();
