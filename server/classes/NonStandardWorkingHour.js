@@ -72,4 +72,16 @@ export default class NonStandardWorkingHour {
             dbo.close();
         };
     }
+    updateNonStandardWorkingHourRecord=async record=>{
+        let dbo = new Dbo();
+        try{
+            return await dbo.updateNonStandardWorkingHourRecord(record);
+        }catch (error) {
+            console.log("Something wrong when updating a Non Standard Working Hour Record to DB:" + error);
+            throw (error);
+        }
+        finally {
+            dbo.close();
+        };
+    }
 }

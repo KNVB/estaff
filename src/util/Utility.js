@@ -7,6 +7,7 @@ export default class Utility {
     static dateTimeFormatter = new Intl.DateTimeFormat('en-ZA', {
         day: "2-digit",
         hour: "2-digit",
+        hour12: true,
         minute: "2-digit",
         month: "2-digit",
         year: "numeric"

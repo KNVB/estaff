@@ -24,8 +24,8 @@ export default class FetchAPI {
             }
         );
     }
-    addNonStandardWorkingHourRecord=async record=>{
-        return (await this.#secureFetch({ "record":record}, "post", "/privateAPI/addNonStandardWorkingHourRecord"));
+    addNonStandardWorkingHourRecord = async record => {
+        return (await this.#secureFetch({ "record": record }, "post", "/privateAPI/addNonStandardWorkingHourRecord"));
     }
     addStaffInfo = async staffInfo => {
         return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/addStaffInfo"));
@@ -36,7 +36,7 @@ export default class FetchAPI {
     getActiveShiftList = async () => {
         return (await this.#secureFetch(null, "get", "/privateAPI/getActiveShiftList"));
     }
-    getNonStandardWorkingHourList=async (year,month)=>{
+    getNonStandardWorkingHourList = async (year, month) => {
         return (await this.#secureFetch({ year: year, month: month }, "get", "/privateAPI/getNonStandardWorkingHourList"));
     }
     getRosterViewerData = async (year, month) => {
@@ -59,6 +59,9 @@ export default class FetchAPI {
     }
     saveToDB = async (preferredShiftList, roster, rosterMonth) => {
         return (await this.#secureFetch({ preferredShiftList, roster, rosterMonth }, "post", "/privateAPI/updateRoster"));
+    }
+    updateNonStandardWorkingHourRecord = async record => {
+        return (await this.#secureFetch({ "record": record }, "post", "/privateAPI/updateNonStandardWorkingHourRecord"));
     }
     updateStaffInfo = async staffInfo => {
         return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/updateStaffInfo"));

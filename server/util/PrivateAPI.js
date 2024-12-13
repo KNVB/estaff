@@ -45,6 +45,9 @@ export default function PrivateAPI(adminUtil, systemParam) {
             case "addStaffInfo":
                 sendResponse(res, addStaffInfo, req.body.staffInfo);
                 break;
+            case "updateNonStandardWorkingHourRecord":
+                sendResponse(res, updateNonStandardWorkingHourRecord, req.body.record);
+                break
             case "updateStaffInfo":
                 sendResponse(res, updateStaffInfo, req.body.staffInfo);
                 break;
@@ -71,8 +74,8 @@ export default function PrivateAPI(adminUtil, systemParam) {
     return router;
 }
 //====================================================================================================================================
-let addNonStandardWorkingHourRecord=async record=>{
-    let nonStandardWorkingHour =new NonStandardWorkingHour();
+let addNonStandardWorkingHourRecord = async record => {
+    let nonStandardWorkingHour = new NonStandardWorkingHour();
     return await nonStandardWorkingHour.addNonStandardWorkingHourRecord(record);
 }
 let addStaffInfo = async staffInfo => {
@@ -85,7 +88,7 @@ let getActiveShiftList = async () => {
     return shiftInfo.activeShiftList;
 }
 let getNonStandardWorkingHourList = async params => {
-    let nonStandardWorkingHour =new NonStandardWorkingHour();
+    let nonStandardWorkingHour = new NonStandardWorkingHour();
     return await nonStandardWorkingHour.getNonStandardWorkingHourList(params.year, params.month);
 }
 let getRosterSchedulerData = async params => {
@@ -108,6 +111,10 @@ let getRosterSchedulerData = async params => {
 let getStaffList = async () => {
     let staffInfo = new StaffInfo();
     return await staffInfo.getStaffList();
+}
+let updateNonStandardWorkingHourRecord = async record => {
+    let nonStandardWorkingHour = new NonStandardWorkingHour();
+    return await nonStandardWorkingHour.updateNonStandardWorkingHourRecord(record);
 }
 let updateRoster = async data => {
     let roster = new Roster();

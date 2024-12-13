@@ -73,6 +73,7 @@ export default function NonStandardWorkingHourTable({ list, month, year, updateP
                             <Link
                                 state={{
                                     "record": {                                        
+                                        claimType:"training",
                                         description:"",
                                         durationInHour: 0,
                                         endTime: new Date(),

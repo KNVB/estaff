@@ -12,7 +12,19 @@ export default class Dbo {
             await this.#connection.promise().beginTransaction();
             console.log("Add Non Standard Working Hour Record transaction start.");
             console.log("===============================");
-            console.log(record);
+            this.#sqlString="insert into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
+            this.#sqlString += "values (?,?,?,?,?,?,?)";
+            //console.log(record);
+            await this.#executeQuery(this.#sqlString,
+                [
+                    record.claimType,
+                    record.description,
+                    new Date(record.endTime),
+                    record.id,
+                    record.durationInHour,
+                    record.staffId,
+                    new Date(record.startTime)
+                ]);
             await this.#connection.promise().commit();
             console.log("An Non Standard Working Hour Record is added successfully.");
             console.log("===============================");
@@ -238,6 +250,35 @@ export default class Dbo {
     getSystemParam = async () => {
         this.#sqlString = "select * from system_param order by param_type,param_key,param_value";
         return await this.#executeQuery(this.#sqlString);
+    }
+    updateNonStandardWorkingHourRecord = async record => {
+        try {
+            await this.#connection.promise().beginTransaction();
+            console.log("update Non Standard Working Hour Record transaction start.");
+            console.log("===============================");
+            this.#sqlString="replace into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
+            this.#sqlString += "values (?,?,?,?,?,?,?)";
+            console.log(record);
+            await this.#executeQuery(this.#sqlString,
+                [
+                    record.claimType,
+                    record.description,
+                    new Date(record.endTime),
+                    record.id,
+                    record.durationInHour,
+                    record.staffId,
+                    new Date(record.startTime)
+                ]);
+            await this.#connection.promise().commit();
+            console.log("An Non Standard Working Hour Record is updated successfully.");
+            console.log("===============================");
+            return true;
+        } catch (error) {
+            if (this.#connection) {
+                await this.#connection.promise().rollback();
+            }
+            throw error;
+        }
     }
     updateStaffInfo = async staffInfo => {
         try {
