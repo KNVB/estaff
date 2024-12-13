@@ -34,9 +34,9 @@ export default function useRosterViewer() {
             let rosterMonth = now.getMonth();
             let rosterViewerData = new RosterViewerData();
             try {
-                //await rosterViewerData.load(rosterYear, rosterMonth);
+                await rosterViewerData.load(rosterYear, rosterMonth);
                 //await rosterViewerData.load(2018, 8);  
-                await rosterViewerData.load(2024, 9);
+                //await rosterViewerData.load(2024, 9);
                 updateItemList({
                     rosterViewerData,
                     type: "init"

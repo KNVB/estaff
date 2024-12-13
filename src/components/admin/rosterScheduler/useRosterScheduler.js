@@ -38,8 +38,8 @@ export default function useRosterScheduler() {
             let rosterMonth = now.getMonth();
             let rosterSchedulerData = new RosterSchedulerData();
             try {
-                await rosterSchedulerData.load(2024, 9);
-                //await rosterSchedulerData.load(rosterYear, rosterMonth);
+                //await rosterSchedulerData.load(2024, 9);
+                await rosterSchedulerData.load(rosterYear, rosterMonth);
                 console.log(rosterSchedulerData);
                 updateItemList({
                     rosterSchedulerData,

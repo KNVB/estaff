@@ -30,10 +30,10 @@ export default function useNonStandardWorkingHourList() {
         let getData = async () => {
             try {
                 let now = new Date();
-                //let year = now.getFullYear();
-                //let month = now.getMonth();
-                let month = 8;
-                let year = 2024;
+                let year = now.getFullYear();
+                let month = now.getMonth();
+                //let month = 8;
+                //let year = 2024;
 
                 let list = await itemList.nonStandardWorkingHourUtil.getNonStandardWorkingHourList(year, month);
                 updateItemList({

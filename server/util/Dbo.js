@@ -12,7 +12,7 @@ export default class Dbo {
             await this.#connection.promise().beginTransaction();
             console.log("Add Non Standard Working Hour Record transaction start.");
             console.log("===============================");
-            this.#sqlString="insert into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
+            this.#sqlString = "insert into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
             this.#sqlString += "values (?,?,?,?,?,?,?)";
             //console.log(record);
             await this.#executeQuery(this.#sqlString,
@@ -256,7 +256,7 @@ export default class Dbo {
             await this.#connection.promise().beginTransaction();
             console.log("update Non Standard Working Hour Record transaction start.");
             console.log("===============================");
-            this.#sqlString="replace into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
+            this.#sqlString = "replace into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
             this.#sqlString += "values (?,?,?,?,?,?,?)";
             console.log(record);
             await this.#executeQuery(this.#sqlString,
@@ -322,6 +322,8 @@ export default class Dbo {
         try {
             let month = rosterMonth.getMonth() + 1;
             let year = rosterMonth.getFullYear();
+            let nextMonth = structuredClone(rosterMonth);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
             await this.#connection.promise().beginTransaction();
             console.log("Update roster data transaction start.");
             console.log("===============================");
@@ -329,7 +331,7 @@ export default class Dbo {
             console.log(rosterMonth.toLocaleDateString("en-CA"));
             for (const [staffId, staffRoster] of Object.entries(roster)) {
                 this.#sqlString = "replace into last_month_balance (staff_id,shift_month,balance) values (?,?,?)";
-                await this.#executeQuery(this.#sqlString, [staffId, rosterMonth.toLocaleDateString("en-CA"), staffRoster.thisMonthBalance]);
+                await this.#executeQuery(this.#sqlString, [staffId, nextMonth, staffRoster.totalBalance]);
                 this.#sqlString = "delete from shift_record where staff_id=? and month(shift_date)=? and year(shift_date)=?";
                 await this.#executeQuery(this.#sqlString, [staffId, month, year]);
                 console.log("delete " + staffId + " shift record for:" + month + "/" + year);
