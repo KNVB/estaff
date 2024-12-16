@@ -30,6 +30,9 @@ export default class FetchAPI {
     addStaffInfo = async staffInfo => {
         return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/addStaffInfo"));
     }
+    deleteNonStandardWorkingHourRecord =async recordId =>{
+        return (await this.#secureFetch({ "recordId":recordId }, "post", "/privateAPI/deleteNonStandardWorkingHourRecord"));
+    }
     exportRosterDataToExcel = async genExcelData => {
         return (await this.#secureFetch(genExcelData, "post", "/privateAPI/exportRosterDataToExcel", "blob"));
     }

@@ -8,7 +8,7 @@ import Utility from "../Utility";
 import useDateTimePicker from "./useDateTimePicker";
 export default function DateTimePicker({ onChange, value }) {
     const obj = useRef();
-    const { isShowPicker, monthFullNameList, monthlyCalendar, result, tempValue, weekDayNameList, action } = useDateTimePicker(value);
+    const { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, isShowPicker, monthFullNameList, monthlyCalendar, result, tempValue, weekDayNameList, action } = useDateTimePicker(value);
     let headerRow = { columnList: [] };
 
     weekDayNameList.forEach((weekDayName, index) => {
@@ -31,7 +31,7 @@ export default function DateTimePicker({ onChange, value }) {
         if (isShowPicker && (!obj.current.contains(e.target))) {
             action.closePicker();
         }
-    },[isShowPicker,action]);
+    }, [isShowPicker, action]);
     let setTimeToNow = () => {
         action.updateTempValue(new Date());
     }
@@ -58,6 +58,10 @@ export default function DateTimePicker({ onChange, value }) {
                         bigPrev={action.prevYear}
                         bigNext={action.nextYear}
                         bodyRow={monthlyCalendar}
+                        hasBigPrev={hasPrevYear}
+                        hasBigNext={hasNextYear}
+                        hasSmallPrev={hasPrevMonth}                        
+                        hasSmallNext={hasNextMonth}
                         headerRow={headerRow}
                         getSelectedItem={getSelectedItem}
                         selectedItem={tempValue.getDate()}

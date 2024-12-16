@@ -7,16 +7,30 @@ let reducer = (state, action) => {
             result.isShowPicker = false;
             break;
         case "init":
+            result.hasNextMonth = action.hasNextMonth;
+            result.hasNextYear = action.hasNextYear;
+            result.hasPrevMonth = action.hasPrevMonth;
+            result.hasPrevYear = action.hasPrevYear;
+            result.maxDate = action.maxDate;
+            result.minDate = action.minDate;
             result.result = action.result;
             result.tempValue = action.result;
             result.monthlyCalendar = Utility.genMonthlyCalendar(action.result);
             break;
         case "updateTempValue":
             console.log(action);
+            result.hasNextMonth = action.hasNextMonth;
+            result.hasNextYear = action.hasNextYear;
+            result.hasPrevMonth = action.hasPrevMonth;
+            result.hasPrevYear = action.hasPrevYear;
             result.tempValue = action.newTempValue;
             result.monthlyCalendar = Utility.genMonthlyCalendar(action.newTempValue);
             break
         case "updateValue":
+            result.hasNextMonth = action.hasNextMonth;
+            result.hasNextYear = action.hasNextYear;
+            result.hasPrevMonth = action.hasPrevMonth;
+            result.hasPrevYear = action.hasPrevYear;
             result.result = action.newValue;
             result.monthlyCalendar = Utility.genMonthlyCalendar(action.newValue);
             break
@@ -29,9 +43,15 @@ let reducer = (state, action) => {
     //console.log(result);
     return result;
 }
-export default function useDateTimePicker(defaultValue) {
+export default function useDateTimePicker(defaultValue, maxDate, minDate) {
     let initObj = {
         isShowPicker: false,
+        hasNextMonth: true,
+        hasNextYear: true,
+        hasPrevMonth: true,
+        hasPrevYear: true,
+        maxDate: null,
+        minDate: null,
         monthFullNameList: [
             "January",
             "February",
@@ -54,34 +74,51 @@ export default function useDateTimePicker(defaultValue) {
 
     const [itemList, updateItemList] = useReducer(reducer, initObj);
     useEffect(() => {
-        updateItemList({ "result": defaultValue, "type": "init" });
-    }, [defaultValue])
+        if (Utility.isNull(defaultValue)) {
+            defaultValue = new Date();
+        }
+        if (Utility.isNull(maxDate)) {
+            maxDate = new Date();
+            maxDate.setFullYear(maxDate.getFullYear() + 100);
+        }
+        if (Utility.isNull(minDate)) {
+            minDate = new Date();
+            minDate.setFullYear(minDate.getFullYear() - 100);
+        }
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(defaultValue, maxDate, minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, maxDate, minDate, "result": defaultValue, "type": "init" });
+    }, [defaultValue, maxDate, minDate])
     let closePicker = () => {
         updateItemList({ "type": "closePicker" })
     }
     let prevMonth = () => {
         let temp = new Date(itemList.tempValue.getTime());
         temp.setMonth(temp.getMonth() - 1);
-        updateItemList({ "newTempValue": temp, "type": "updateTempValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newTempValue": temp, "type": "updateTempValue" });
     }
     let prevYear = () => {
         let temp = new Date(itemList.tempValue.getTime());
         temp.setFullYear(temp.getFullYear() - 1);
-        updateItemList({ "newTempValue": temp, "type": "updateTempValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newTempValue": temp, "type": "updateTempValue" });
     }
     let nextMonth = () => {
         let temp = new Date(itemList.tempValue.getTime());
         temp.setMonth(temp.getMonth() + 1);
-        updateItemList({ "newTempValue": temp, "type": "updateTempValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newTempValue": temp, "type": "updateTempValue" });
     }
     let nextYear = () => {
         let temp = new Date(itemList.tempValue.getTime());
         temp.setFullYear(temp.getFullYear() + 1);
-        updateItemList({ "newTempValue": temp, "type": "updateTempValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newTempValue": temp, "type": "updateTempValue" });
     }
     let selectToday = () => {
         let temp = new Date();
-        updateItemList({ "newTempValue": temp, "type": "updateTempValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newTempValue": temp, "type": "updateTempValue" });
     }
     let togglePicker = () => {
         updateItemList({ "type": "togglePicker" })
@@ -89,20 +126,27 @@ export default function useDateTimePicker(defaultValue) {
     let updateDateValue = date => {
         let temp = new Date(itemList.tempValue.getTime());
         temp.setDate(date);
-        updateItemList({ "newTempValue": temp, "type": "updateTempValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newTempValue": temp, "type": "updateTempValue" });
     }
     let updateValue = date => {
         let temp = new Date(itemList.result.getTime());
         temp.setDate(date);
-        updateItemList({ "newValue": temp, "type": "updateValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newValue": temp, "type": "updateValue" });
     }
     let updateTempValue = dateObj => {
         let temp = new Date(dateObj.getTime());
         console.log(temp);
-        updateItemList({ "newTempValue": temp, "type": "updateTempValue" });
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
+        updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "newTempValue": temp, "type": "updateTempValue" });
     }
     return {
         isShowPicker: itemList.isShowPicker,
+        hasNextMonth: itemList.hasNextMonth,
+        hasNextYear: itemList.hasNextYear,
+        hasPrevMonth: itemList.hasPrevMonth,
+        hasPrevYear: itemList.hasPrevYear,
         monthFullNameList: itemList.monthFullNameList,
         monthlyCalendar: itemList.monthlyCalendar,
         result: itemList.result,

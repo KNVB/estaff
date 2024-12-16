@@ -83,32 +83,7 @@ export default function useMonthPicker(defaultValue, maxDate, minDate) {
         tempResult: null,
     }
     const [itemList, updateItemList] = useReducer(reducer, initObj);
-    let genPreNext = (newValue, maxDate, minDate) => {
-
-        let nextMonth = new Date(newValue.getFullYear(), newValue.getMonth() + 1, 1);
-        let nextYear = new Date(newValue.getFullYear() + 1, 0, 1);
-        let prevMonth = new Date(newValue.getFullYear(), newValue.getMonth() - 1, 1);
-        /*******************************************************************
-        * if the last day of the previous year does not within the range, *
-        * the previous year button should be disabled.                    *
-        *******************************************************************/
-        let prevYear = new Date(newValue.getFullYear() - 1, 11, 31);
-
-        /*******************************************************************
-        * if the last day of the previous month does not within the range, *
-        * the previous month button should be disabled.                    *
-        *******************************************************************/
-        prevMonth.setDate(prevMonth.getDate() - 1);
-        let hasNextMonth = (nextMonth >= minDate && nextMonth <= maxDate);
-        let hasNextYear = (nextYear >= minDate && nextYear <= maxDate)
-        let hasPrevMonth = (prevMonth >= minDate && prevMonth <= maxDate);
-        let hasPrevYear = (prevYear >= minDate && prevYear <= maxDate);
-        
-        return {
-            hasNextMonth, hasNextYear,
-            hasPrevMonth, hasPrevYear
-        }
-    }
+   
     useEffect(() => {
         if (Utility.isNull(defaultValue)) {
             defaultValue = new Date();
@@ -121,7 +96,7 @@ export default function useMonthPicker(defaultValue, maxDate, minDate) {
             minDate = new Date();
             minDate.setFullYear(minDate.getFullYear() - 100);
         }
-        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = genPreNext(defaultValue, maxDate, minDate);
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(defaultValue, maxDate, minDate);
         updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, maxDate, minDate, "result": defaultValue ?? new Date(), "type": "init" });
     }, [defaultValue, maxDate, minDate])
     let closePicker = () => {
@@ -131,20 +106,20 @@ export default function useMonthPicker(defaultValue, maxDate, minDate) {
     let prevYear = () => {
         let temp = new Date(itemList.tempResult.getTime());
         temp.setFullYear(temp.getFullYear() - 1);
-        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = genPreNext(temp, itemList.maxDate, itemList.minDate);
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
         updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "type": "updateYear", result: temp });
     }
     let nextYear = () => {
         let temp = new Date(itemList.tempResult.getTime());
         temp.setFullYear(temp.getFullYear() + 1);
-        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = genPreNext(temp, itemList.maxDate, itemList.minDate);
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(temp, itemList.maxDate, itemList.minDate);
         updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "type": "updateYear", result: temp });
     }
     let togglePicker = () => {
         updateItemList({ "type": "togglePicker" })
     }
     let updateValue = newValue => {
-        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = genPreNext(newValue, itemList.maxDate, itemList.minDate);
+        let { hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear } = Utility.genPreNext(newValue, itemList.maxDate, itemList.minDate);
         updateItemList({ hasNextMonth, hasNextYear, hasPrevMonth, hasPrevYear, "result": newValue, "type": "updateValue" });
     }
     return {

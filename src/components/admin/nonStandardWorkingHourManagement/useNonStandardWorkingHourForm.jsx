@@ -33,6 +33,12 @@ export default function useNonStandardWorkingHourForm() {
     let backToRecordlList = e => {
         navigate("../nonStandardWorkingHourManagement/list");
     }
+    let deleteRecord=async id=>{
+        if (confirm("Are you sure to delete this record?")){
+            await itemList.nonStandardWorkingHourUtil.deleteRecord(id);
+            backToRecordlList();
+        }
+    }
     let setDescription = desc => {
         updateItemList({
             "description":desc,
@@ -71,6 +77,7 @@ export default function useNonStandardWorkingHourForm() {
         record: itemList.record,
         formAction: {
             backToRecordlList,
+            deleteRecord,
             setDescription,
             setEndTime,
             setStartTime,

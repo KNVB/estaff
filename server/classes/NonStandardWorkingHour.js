@@ -16,6 +16,18 @@ export default class NonStandardWorkingHour {
             dbo.close();
         };
     }
+    deleteNonStandardWorkingHourRecord=async recordId=>{
+        let dbo = new Dbo();
+        try{
+            return await dbo.deleteNonStandardWorkingHourRecord(recordId);
+        }catch (error) {
+            console.log("Something wrong when deleting a Non Standard Working Hour Record to DB:" + error);
+            throw (error);
+        }
+        finally {
+            dbo.close();
+        };
+    }
     getNonStandardWorkingHourList = async (year, month) => {
         let dbo = new Dbo();
         let list = {}

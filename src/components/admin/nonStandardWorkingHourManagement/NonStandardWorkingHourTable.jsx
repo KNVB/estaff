@@ -72,9 +72,9 @@ export default function NonStandardWorkingHourTable({ list, month, year, updateP
                         <td className='border text-end' colSpan={6}>
                             <Link
                                 state={{
-                                    "record": {                                        
-                                        claimType:"training",
-                                        description:"",
+                                    "record": {
+                                        claimType: "training",
+                                        description: "",
                                         durationInHour: 0,
                                         endTime: new Date(),
                                         "id": -1,

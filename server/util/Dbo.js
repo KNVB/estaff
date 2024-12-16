@@ -15,6 +15,7 @@ export default class Dbo {
             this.#sqlString = "insert into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
             this.#sqlString += "values (?,?,?,?,?,?,?)";
             //console.log(record);
+            let startTime = new Date(record.startTime);
             await this.#executeQuery(this.#sqlString,
                 [
                     record.claimType,
@@ -23,8 +24,29 @@ export default class Dbo {
                     record.id,
                     record.durationInHour,
                     record.staffId,
-                    new Date(record.startTime)
+                    startTime
                 ]);
+
+            let nextMonth = new Date(startTime.getFullYear(), startTime.getMonth(), 1);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            let dataArray = [
+                Number(record.durationInHour),
+                nextMonth,
+                record.staffId
+            ];
+
+            this.#sqlString = "select balance from last_month_balance where shift_month=? and staff_id=?";
+            let result = await this.#executeQuery(this.#sqlString, [
+                nextMonth,
+                record.staffId
+            ]);
+            //console.log(nextMonth, result);
+            if (result.length === 0) {
+                this.#sqlString = "insert into last_month_balance (balance,shift_month,staff_id) values(?,?,?)";
+            } else {
+                this.#sqlString = "update last_month_balance set balance=balance + ? where shift_month>=? and staff_id=?";
+            }
+            await this.#executeQuery(this.#sqlString, dataArray);
             await this.#connection.promise().commit();
             console.log("An Non Standard Working Hour Record is added successfully.");
             console.log("===============================");
@@ -63,6 +85,39 @@ export default class Dbo {
             }
             await this.#connection.promise().commit();
             console.log("An EMSTF staff info is added successfully.");
+            console.log("===============================");
+            return true;
+        } catch (error) {
+            if (this.#connection) {
+                await this.#connection.promise().rollback();
+            }
+            throw error;
+        }
+    }
+    deleteNonStandardWorkingHourRecord = async recordId => {
+        try {
+            await this.#connection.promise().beginTransaction();
+            console.log("Deleted Non Standard Working Hour Record transaction start.");
+            console.log("===============================");
+            this.#sqlString = "select * from non_standard_working_hour where id=?";
+            let result = await this.#executeQuery(this.#sqlString, [recordId]);
+            let record = result[0];
+
+            let shiftMonth = new Date(record.start_time.getFullYear(), record.start_time.getMonth(), 1);
+            shiftMonth.setMonth(shiftMonth.getMonth() + 1);
+            //console.log(result, record.no_of_hour_applied_for, shiftMonth, record.staff_id);
+            this.#sqlString = "update last_month_balance set balance=balance - ? where shift_month>=? and staff_id=?";
+            result = await this.#executeQuery(this.#sqlString, [
+                Number(record.no_of_hour_applied_for),
+                shiftMonth,
+                record.staff_id
+            ]);
+            
+            this.#sqlString = "delete from non_standard_working_hour where id=?";
+            result = await this.#executeQuery(this.#sqlString, [recordId]);
+
+            await this.#connection.promise().commit();
+            console.log("An Non Standard Working Hour Record is deleted successfully.");
             console.log("===============================");
             return true;
         } catch (error) {
@@ -256,19 +311,69 @@ export default class Dbo {
             await this.#connection.promise().beginTransaction();
             console.log("update Non Standard Working Hour Record transaction start.");
             console.log("===============================");
-            this.#sqlString = "replace into non_standard_working_hour (claim_type,description,end_time,id,no_of_hour_applied_for,staff_id,start_time)";
-            this.#sqlString += "values (?,?,?,?,?,?,?)";
-            console.log(record);
+
+            this.#sqlString = "select start_time,no_of_hour_applied_for from non_standard_working_hour where id=?";
+            let result = await this.#executeQuery(this.#sqlString, [record.id]);
+            let startTime = result[0].start_time;
+            let nextMonth = new Date(startTime.getFullYear(), startTime.getMonth(), 1);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            this.#sqlString = "update last_month_balance set balance=balance - ? where shift_month>=? and staff_id=?";
+            await this.#executeQuery(this.#sqlString,
+                [
+                    Number(result[0].no_of_hour_applied_for),
+                    nextMonth,
+                    record.staffId
+                ]
+            );
+            startTime = new Date(record.startTime);
+            nextMonth = new Date(startTime.getFullYear(), startTime.getMonth(), 1);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            this.#sqlString = "update non_standard_working_hour set claim_type=?,description=?,end_time=?,";
+            this.#sqlString += "no_of_hour_applied_for=?,staff_id=?,start_time=? where id=?";
             await this.#executeQuery(this.#sqlString,
                 [
                     record.claimType,
                     record.description,
                     new Date(record.endTime),
-                    record.id,
                     record.durationInHour,
                     record.staffId,
-                    new Date(record.startTime)
+                    startTime,
+                    record.id
+                ]
+            );
+            this.#sqlString = "select * from last_month_balance where shift_month=? and staff_id=?";
+            result = await this.#executeQuery(this.#sqlString,
+                [
+                    nextMonth,
+                    record.staffId
                 ]);
+            if (result.length === 0) {
+                this.#sqlString = "insert into last_month_balance (balance,shift_month,staff_id) values (?,?,?)";
+                await this.#executeQuery(this.#sqlString,
+                    [
+                        Number(record.durationInHour),
+                        nextMonth,
+                        record.staffId
+                    ]
+                );
+                this.#sqlString = "update last_month_balance set balance=balance +? where shift_month>? and staff_id=?";
+                await this.#executeQuery(this.#sqlString,
+                    [
+                        Number(record.durationInHour),
+                        nextMonth,
+                        record.staffId
+                    ]
+                );
+            } else {
+                this.#sqlString = "update last_month_balance set balance=balance +? where shift_month>=? and staff_id=?";
+            }
+            await this.#executeQuery(this.#sqlString,
+                [
+                    Number(record.durationInHour),
+                    nextMonth,
+                    record.staffId
+                ]
+            );
             await this.#connection.promise().commit();
             console.log("An Non Standard Working Hour Record is updated successfully.");
             console.log("===============================");

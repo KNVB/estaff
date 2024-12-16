@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { useNavigate } from 'react-router-dom';
 import NonStandardWorkingHourUtil from "../../../dataUtil/NonStandardWorkingHourUtil";
 let reducer = (state, action) => {
     let result = { ...state };
@@ -18,6 +19,7 @@ let reducer = (state, action) => {
     return result;
 }
 export default function useNonStandardWorkingHourList() {
+    let navigate = useNavigate();
     const [itemList, updateItemList] = useReducer(reducer, {
         error: null,
         isLoading: true,
@@ -26,6 +28,7 @@ export default function useNonStandardWorkingHourList() {
         list: {},
         year: 0
     });
+
     useEffect(() => {
         let getData = async () => {
             try {
@@ -49,6 +52,8 @@ export default function useNonStandardWorkingHourList() {
         }
         getData();
     }, []);
+    
+    
     async function updatePeriod(period) {
         let month = period.getMonth();
         let year = period.getFullYear();
@@ -63,15 +68,14 @@ export default function useNonStandardWorkingHourList() {
         } catch (error) {
             console.log(error);
             updateItemList({ "error": error, "type": "setError" });
-        }    
-
+        }
     }
     return {
         error: itemList.error,
         isLoading: itemList.isLoading,
         list: itemList.list,
         month: itemList.month,
-        year: itemList.year,
+        year: itemList.year,       
         updatePeriod
     }
 }

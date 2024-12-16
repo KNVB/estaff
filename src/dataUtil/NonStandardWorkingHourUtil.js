@@ -7,6 +7,9 @@ export default class NonStandardWorkingHourUtil {
     async addRecord(record){
         return await this.#fetchAPI.addNonStandardWorkingHourRecord(record);
     }
+    async deleteRecord(recordId){
+        return await this.#fetchAPI.deleteNonStandardWorkingHourRecord(recordId);
+    }
     async getNonStandardWorkingHourList(year, month) {
         return await this.#fetchAPI.getNonStandardWorkingHourList(year, month + 1);
     }

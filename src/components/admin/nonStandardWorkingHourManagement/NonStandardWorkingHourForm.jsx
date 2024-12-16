@@ -1,4 +1,5 @@
 import { Button } from "react-bootstrap";
+import { Trash3 } from 'react-bootstrap-icons';
 import useNonStandardWorkingHourForm from "./useNonStandardWorkingHourForm";
 import DateTimePicker from "../../common/calendarPicker/dateTimePicker/DateTimePicker";
 export default function NonStandardWorkingHourForm({ action }) {
@@ -88,6 +89,11 @@ export default function NonStandardWorkingHourForm({ action }) {
                         <tr>
                             <td className="border border-dark text-center" colSpan={4}>
                                 <Button onClick={formAction.backToRecordlList}>Cancel</Button>&nbsp;
+                                {
+                                    (action === "edit") && 
+                                    <><Button onClick={()=>formAction.deleteRecord(record.id)}>Delete</Button>&nbsp;</>
+                                }
+                                
                                 <Button onClick={submitUpdate}>{(action === "edit") ? "Update" : "Add"} Non Standard Working Hour Record </Button>
                             </td>
                         </tr>

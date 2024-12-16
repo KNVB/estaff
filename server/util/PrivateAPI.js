@@ -45,6 +45,9 @@ export default function PrivateAPI(adminUtil, systemParam) {
             case "addStaffInfo":
                 sendResponse(res, addStaffInfo, req.body.staffInfo);
                 break;
+            case "deleteNonStandardWorkingHourRecord":
+                sendResponse(res, deleteNonStandardWorkingHourRecord,req.body.recordId);
+                break;
             case "updateNonStandardWorkingHourRecord":
                 sendResponse(res, updateNonStandardWorkingHourRecord, req.body.record);
                 break
@@ -81,6 +84,10 @@ let addNonStandardWorkingHourRecord = async record => {
 let addStaffInfo = async staffInfo => {
     let staffInfoObj = new StaffInfo();
     return await staffInfoObj.addStaffInfo(staffInfo);
+}
+let deleteNonStandardWorkingHourRecord = async recordId => {
+    let nonStandardWorkingHour = new NonStandardWorkingHour();
+    return await nonStandardWorkingHour.deleteNonStandardWorkingHourRecord(recordId);
 }
 let getActiveShiftList = async () => {
     let shiftInfo = new ShiftInfo();

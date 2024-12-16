@@ -1,4 +1,4 @@
-export default class Utility{
+export default class Utility {
     static dateFormatter = new Intl.DateTimeFormat('en-ZA', {
         day: "2-digit",
         hour: "2-digit",
@@ -7,6 +7,31 @@ export default class Utility{
         month: "2-digit",
         year: "numeric"
     });
+    static genPreNext = (newValue, maxDate, minDate) => {
+        let nextMonth = new Date(newValue.getFullYear(), newValue.getMonth() + 1, 1);
+        let nextYear = new Date(newValue.getFullYear() + 1, 0, 1);
+        let prevMonth = new Date(newValue.getFullYear(), newValue.getMonth() - 1, 1);
+        /*******************************************************************
+        * if the last day of the previous year does not within the range, *
+        * the previous year button should be disabled.                    *
+        *******************************************************************/
+        let prevYear = new Date(newValue.getFullYear() - 1, 11, 31);
+
+        /*******************************************************************
+        * if the last day of the previous month does not within the range, *
+        * the previous month button should be disabled.                    *
+        *******************************************************************/
+        prevMonth.setDate(prevMonth.getDate() - 1);
+        let hasNextMonth = (nextMonth >= minDate && nextMonth <= maxDate);
+        let hasNextYear = (nextYear >= minDate && nextYear <= maxDate)
+        let hasPrevMonth = (prevMonth >= minDate && prevMonth <= maxDate);
+        let hasPrevYear = (prevYear >= minDate && prevYear <= maxDate);
+
+        return {
+            hasNextMonth, hasNextYear,
+            hasPrevMonth, hasPrevYear
+        }
+    }
     static isNull = obj => {
         if ((obj === undefined) || (obj === null)) {
             return true
@@ -51,7 +76,7 @@ export default class Utility{
         }
         return result;
     }
-    static genMonthlyCalendar=selectedDate => {
+    static genMonthlyCalendar = selectedDate => {
         let temp = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
         /*
         console.log("===================");
