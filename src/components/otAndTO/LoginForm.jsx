@@ -1,6 +1,8 @@
 import { Button } from "react-bootstrap";
 import './LoginForm.css';
-export default function SideBar({ navItemList, content }) {
+import { useLoginForm } from "./useLoginForm";
+export default function LoginForm() {
+    const { adPassword, adUserName, error, updateTextField,login,loginError } = useLoginForm();
     document.title = "EMSTF Staff OT and Time Off Application";
     return (
         <div className='main'>
@@ -16,23 +18,42 @@ export default function SideBar({ navItemList, content }) {
                         </thead>
                         <tbody>
                             <tr>
-                                <td className='text-end p-1'>HKO AD account name:</td>
-                                <td><input type="text"/></td>
+                                <td className='align-top text-end p-1'>
+                                    HKO AD account name:<br/>
+                                </td>
+                                <td>
+                                    <input name="adUserName" onChange={updateTextField} required type="text" value={adUserName} />
+                                    <div className="text-danger">{(error) ? error.adUserName : ""}</div>
+                                </td>
                             </tr>
                             <tr>
-                                <td className='text-end p-1'>HKO AD account password:</td>
-                                <td><input type="text"/></td>
+                                <td className='align-top text-end p-1'>
+                                    HKO AD account password:<br/>
+                                </td>
+                                <td>
+                                    <input name="adPassword" onChange={updateTextField} required type="password" value={adPassword} />
+                                    <div className="text-danger">{(error) ? error.adPassword : ""}</div>
+                                </td>
                             </tr>
+                            {
+                                (loginError!=="") &&
+                                <tr className="text-center text-danger">
+                                    <td colSpan={2}>
+                                        {loginError}
+                                    </td>
+                                </tr>
+                            }
+                                                        
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td className="text-center pt-3" colSpan={2}>
-                                    <Button>Login</Button>
+                                    <Button onClick={login}>Login</Button>
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
-                </div>    
+                </div>
             </div>
         </div>
     )

@@ -24,14 +24,17 @@ export default class FetchAPI {
             }
         );
     }
+    adLogin = async (adUserName, adPassword) => {
+        return (await this.#fetch({ adUserName, adPassword }, "post", "/publicAPI/loginAD"));
+    }
     addNonStandardWorkingHourRecord = async record => {
         return (await this.#secureFetch({ "record": record }, "post", "/privateAPI/addNonStandardWorkingHourRecord"));
     }
     addStaffInfo = async staffInfo => {
         return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/addStaffInfo"));
     }
-    deleteNonStandardWorkingHourRecord =async recordId =>{
-        return (await this.#secureFetch({ "recordId":recordId }, "post", "/privateAPI/deleteNonStandardWorkingHourRecord"));
+    deleteNonStandardWorkingHourRecord = async recordId => {
+        return (await this.#secureFetch({ "recordId": recordId }, "post", "/privateAPI/deleteNonStandardWorkingHourRecord"));
     }
     exportRosterDataToExcel = async genExcelData => {
         return (await this.#secureFetch(genExcelData, "post", "/privateAPI/exportRosterDataToExcel", "blob"));
