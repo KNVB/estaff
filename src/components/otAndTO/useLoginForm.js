@@ -44,7 +44,7 @@ export function useLoginForm() {
     let login=async()=>{
         try{
             if ((itemList.adPassword !=="") && (itemList.adUserName!=="")){
-                let result=await itemList.emstfUtil.adLogin(itemList.adUserName,itemList.adPassword);
+                let result=await itemList.emstfUtil.login(itemList.adUserName,itemList.adPassword);
                 console.log("result="+result);
             }else{
                 throw "HKO AD account name or password is missing.";

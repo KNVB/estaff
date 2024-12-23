@@ -139,7 +139,7 @@ export default class RosterExporter {
 				cell.alignment = { wrapText: true };
 				cell.border = fullBorderStyle;
 				cell.font = timesNewRomanFont12;
-				cell.value = roster.itoName + "\n" + roster.itoPostName + " Extn. 2458";
+				cell.value = roster.staffName + "\n" + roster.staffPostName + " Extn. 2458";
 				for (i = 1; i < 32; i++) {
 					cell = row.getCell(i + 1);
 					cell.alignment = centerAligment;

@@ -22,8 +22,8 @@ export default function PublicAPI(adminUtil, systemParam) {
     });
     router.post('/:action', async (req, res, next) => {
         switch (req.params.action) {
-            case "loginAD":
-                sendResponse(res, loginAD, {
+            case "emstfLogin":
+                sendResponse(res, emstfLogin, {
                     adUserName: req.body.adUserName,
                     adPassword: req.body.adPassword
                 });
@@ -54,7 +54,7 @@ let getRosterViewerData = async (params) => {
         nonStandardWorkingHourSummary
     }
 }
-let loginAD = async params => {
+let emstfLogin = async params => {
     let config = {
         tlsOptions: { ca: [fs.readFileSync(process.env["AD_CA_CERT"])] },
         url: process.env["AD_LDAP_URL"]
@@ -76,7 +76,7 @@ let sendResponse = async (res, action, param) => {
     try {
         res.send(await action(param));
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).send(error.message);
     }
 }

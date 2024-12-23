@@ -24,8 +24,8 @@ export default class FetchAPI {
             }
         );
     }
-    adLogin = async (adUserName, adPassword) => {
-        return (await this.#fetch({ adUserName, adPassword }, "post", "/publicAPI/loginAD"));
+    emsftLogin = async (adUserName, adPassword) => {
+        return (await this.#fetch({ adUserName, adPassword }, "post", "/publicAPI/emstfLogin"));
     }
     addNonStandardWorkingHourRecord = async record => {
         return (await this.#secureFetch({ "record": record }, "post", "/privateAPI/addNonStandardWorkingHourRecord"));

@@ -3,10 +3,10 @@ export default class EMSTFUtil {
     constructor() {
 
     }
-    adLogin = async (userName, usePassword) => {
+    login = async (userName, usePassword) => {
         let fetchAPI = new FetchAPI();
         try{
-            return await fetchAPI.adLogin(userName, usePassword);
+            return await fetchAPI.emstfLogin(userName, usePassword);
         }catch (error){
             throw error.message
         }        

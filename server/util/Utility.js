@@ -14,12 +14,11 @@ export default class Utility {
         return { "startDateString": startDateString, "endDateString": endDateString };
     }
     static getUID(){
-        let characters="abcdefghijklmnopqrstuvwxyz0123456789";
-        let uid="";
-        for (let i=0;i<10;i++){
-            let index=Math.floor(Math.random() * (characters.length-1));
-            uid+=characters[index];
-        }
-        return uid;    
+        let tokenLen = 10;
+        let text = "";
+        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (let i = 0; i < tokenLen; ++i)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        return text;
     }    
 }
