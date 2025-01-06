@@ -16,11 +16,18 @@ export default class Utility {
         let preShift = [];
         for (let j = dateOfMonth - systemParam.noOfPrevDate; j < dateOfMonth; j++) {
             if (itoRoster.shiftList[j]) {
-                let shiftObj = itoRoster.shiftList[j];
-                if ((essentialShift.indexOf(shiftObj) > -1) ||
-                    (shiftObj === "O")
-                ) {
-                    preShift.push(shiftObj);
+                let shift = itoRoster.shiftList[j];
+                switch (true) {
+                    case (essentialShift.indexOf(shift) > -1):
+                    case (shift === "d"):
+                    case (shift === "d1"):
+                    case (shift === "d2"):
+                    case (shift === "d3"):
+                    case (shift === "O"):
+                        preShift.push(shift);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -47,7 +54,11 @@ export default class Utility {
         if (blackListShiftPattern[staffId]) {
             for (let i = 0; i < blackListShiftPattern[staffId].length; i++) {
                 let blackListShift = blackListShiftPattern[staffId][i];
+
                 if (newShift.indexOf(blackListShift) > -1) {
+                    if (staffId === "ITO6_1999-01-01") {
+                        console.log(newShift, blackListShift);
+                    }
                     result = true;
                     break;
                 }
@@ -88,7 +99,7 @@ export default class Utility {
             let assignedShiftList = [];
             staffIdList.forEach(staffId => {
                 let shiftInfoList = roster[staffId].shiftList[i];
-                
+
                 shiftInfoList = shiftInfoList.split("+");
                 for (let j = 0; j < shiftInfoList.length; j++) {
                     let shiftInfo;
