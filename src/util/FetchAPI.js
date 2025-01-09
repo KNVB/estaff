@@ -24,7 +24,7 @@ export default class FetchAPI {
             }
         );
     }
-    emsftLogin = async (adUserName, adPassword) => {
+    emstfLogin = async (adUserName, adPassword) => {
         return (await this.#fetch({ adUserName, adPassword }, "post", "/publicAPI/emstfLogin"));
     }
     addNonStandardWorkingHourRecord = async record => {

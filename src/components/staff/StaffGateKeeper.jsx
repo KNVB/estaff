@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-export default function OTAndTOGateKeeper(){
+export default function StaffGateKeeper(){
     let finalComponent;
     if (sessionStorage.getItem("accessToken")){
         finalComponent=<Outlet/>
