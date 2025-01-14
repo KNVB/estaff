@@ -1,0 +1,23 @@
+/* The navigation menu links */
+.itemList a,
+.itemList span{
+    color: #f1f1f1;
+	display: block;
+    font-family: Arial;
+	font-size: 20px;
+    padding: 4px 10px 0px 32px;
+	marker-start: 0px;
+	text-align: start;
+	text-decoration: none;
+	transition: 0.3s;
+}
+.itemList{
+	list-style-type: square ;
+}
+.itemList ul li{
+	margin: 0px;
+	padding: 0px;
+}
+span.logout {
+	cursor: pointer;
+}

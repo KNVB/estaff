@@ -1,10 +1,9 @@
-import fs from "fs";
 import Express from 'express';
 import HKOAD from "./HKO_AD.js";
 import NonStandardWorkingHour from "../classes/NonStandardWorkingHour.js";
 import Roster from "../classes/Roster.js";
 import ShiftInfo from "../classes/ShiftInfo.js";
-export default function PublicAPI(adminUtil, systemParam) {
+export default function PublicAPI(hkoADConfig, jwt, systemParam) {
     const router = Express.Router();
     router.get('/:action', async (req, res, next) => {
         switch (req.params.action) {
@@ -22,11 +21,8 @@ export default function PublicAPI(adminUtil, systemParam) {
     });
     router.post('/:action', async (req, res, next) => {
         switch (req.params.action) {
-            case "emstfLogin":
-                sendResponse(res, emstfLogin, {
-                    adUserName: req.body.adUserName,
-                    adPassword: req.body.adPassword
-                });
+            case "login":
+                sendResponse(res, doADLogin, { hkoADConfig, jwt, loginObj: req.body.loginObj });
                 break;
             default:
                 next();
@@ -54,21 +50,32 @@ let getRosterViewerData = async (params) => {
         nonStandardWorkingHourSummary
     }
 }
-let emstfLogin = async params => {
-    let config = {
-        tlsOptions: { ca: [fs.readFileSync(process.env["AD_CA_CERT"])] },
-        url: process.env["AD_LDAP_URL"]
-    };
-    //console.log(config);
-    let hkoAD = new HKOAD(config);
+let doADLogin = async (params) => {
+    let hkoAd = new HKOAD(params.hkoADConfig);
+    let loginObj = params.loginObj;
+    let jwt = params.jwt;
     try {
-        await hkoAD.bind(params.adUserName + "@ad.hko.hksarg", params.adPassword);
-        //console.log(result);
-        return true
+        //console.log(loginObj);
+        await hkoAd.login(loginObj.userName + "@ad.hko.hksarg", loginObj.userPassword);
+        let adUserObj = await hkoAd.getUserObj(loginObj.userName);
+        let temp = {
+            cn: adUserObj[0].cn,
+            department: adUserObj[0].department,
+            givenName: adUserObj[0].givenName,
+            loginName: adUserObj[0].sAMAccountName,
+            sn: adUserObj[0].sn,
+            title: adUserObj[0].title
+        }
+        return jwt.sign(temp);
     } catch (error) {
-        throw (error)
-    } finally {
-        await hkoAD.unbind();
+        /*
+        console.log("Something Wrong:");
+        console.log(error);
+        */
+        throw error;
+    }
+    finally {
+        await hkoAd.unbind();
     }
 }
 //====================================================================================================================================
@@ -76,7 +83,7 @@ let sendResponse = async (res, action, param) => {
     try {
         res.send(await action(param));
     } catch (error) {
-        //console.log(error);
+        console.log(error);
         res.status(400).send(error.message);
     }
 }

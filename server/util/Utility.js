@@ -1,4 +1,9 @@
 export default class Utility {
+    static escapeForQuery(inValue){
+        let result=inValue.replace("(","\(");
+        result=result.replace(")","\\29");
+        return result;
+    }
     static getEndDate(year,month){
         let tempDate = new Date(year + "-" + month + "-1");
         tempDate.setMonth(month);
@@ -20,5 +25,5 @@ export default class Utility {
         for (let i = 0; i < tokenLen; ++i)
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         return text;
-    }    
+    }
 }

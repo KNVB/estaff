@@ -1,0 +1,45 @@
+import { useNavigate } from 'react-router-dom';
+import { Button } from "react-bootstrap";
+export default function StaffPlatForm({ identity }) {
+    const navigate = useNavigate();
+    let logout = () => {
+        sessionStorage.clear();
+        navigate("/login");
+    }
+    return (
+        <table className="border top-0 m-2">
+            <thead>
+                <tr>
+                    <td colSpan={2}>
+                        Staff Info
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td className="border text-end">Name:</td>
+                    <td className="border text-start">{identity.cn}</td>
+                </tr>
+                <tr>
+                    <td className="border text-end">Department:</td>
+                    <td className="border text-start">{identity.department}</td>
+                </tr>
+                <tr>
+                    <td className="border text-end">Post:</td>
+                    <td className="border text-start">{identity.title}</td>
+                </tr>
+                <tr>
+                    <td className="border text-end">Login Name:</td>
+                    <td className="border text-start">{identity.loginName}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colSpan={2}>
+                        <Button onClick={logout}>Logout</Button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    )
+}

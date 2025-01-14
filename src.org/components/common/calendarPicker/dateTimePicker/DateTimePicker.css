@@ -1,0 +1,26 @@
+.dateTimePicker {
+    display: inline-block;
+    flex-direction: column;
+}
+
+.dateTimePickerTimeSelector {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.dateTimeResult {
+    border: 1px solid #5dade2;
+    cursor: pointer;
+    margin: 1px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+.todayRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2px;
+}

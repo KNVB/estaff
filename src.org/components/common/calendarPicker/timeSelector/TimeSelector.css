@@ -1,0 +1,48 @@
+.timeSelector {
+    align-items: center;
+    border: 1px solid #5dade2;
+    border-radius: 10%;
+    display: inline-flex;
+    margin-top: 0px;
+    padding-left: 2px;
+    padding-bottom: 0px;
+    padding-top: none;
+}
+
+.timeSelector>input[type=number] {
+    appearance: textfield;
+    border: none;
+    field-sizing: content;
+    -moz-appearance: textfield;
+    outline: none;
+    margin: 0px;
+    -webkit-appearance: textfield;
+    width: fit-content;
+}
+
+.timeSelector>input::-webkit-outer-spin-button,
+.timeSelector>input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.timeSelectorDigit {
+    margin: 0px;
+    outline: none;
+    padding: 0px;
+}
+
+.timeSelectorUpDown {
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: column;
+    flex-grow: 1;
+    font-size: 10px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.timeSelectorUpDown>div {
+    margin: 0px;
+    padding: 0px;
+}

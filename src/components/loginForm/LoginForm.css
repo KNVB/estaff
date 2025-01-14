@@ -1,0 +1,15 @@
+.content{
+    display:flex;
+    flex-grow:1;
+    flex-direction: column;    
+    margin:0;
+    padding:5px;
+}
+.main{
+    height:100%;				
+    left:0;
+    padding:3px;
+    position:absolute;
+    top:0;
+    width:100%;
+}

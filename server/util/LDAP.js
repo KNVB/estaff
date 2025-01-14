@@ -18,6 +18,33 @@ export default class LDAP {
             });
         });
     }
+    async search(dn, opts) {
+        const entries = [];
+        let referrals = [];
+        return new Promise((resolve, reject) => {
+            this.#client.search(dn, opts, function (err, response) {
+                response.on('searchEntry', function (entry) {
+                    entries.push(entry);
+                });
+                response.on('searchReference', referral => {
+                    referrals = referrals.concat(referral.uris);
+                });
+                response.on('error', error => {
+                    return reject(error);
+                })
+                response.on('end', result => {
+                    if (result.status !== 0) {
+                        return reject(result.status);
+                    }
+
+                    return resolve({
+                        entries: entries,
+                        referrals: referrals
+                    });
+                });
+            });
+        });
+    }
     async unbind() {
         return new Promise((resolve, reject) => {
             this.#client.unbind(err => {

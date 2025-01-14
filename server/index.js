@@ -1,30 +1,25 @@
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import fs from "fs";
 import http from 'http';
-import path from "path";
+import dotenv from 'dotenv';
 import Express from 'express';
-import PrivateAPI from './util/PrivateAPI.js';
+import JWT from "./util/JWT.js";
 import PublicAPI from "./util/PublicAPI.js";
 import SystemParam from './classes/SystemParam.js';
-
-dotenv.config({ path: './.env.' + process.env.NODE_ENV });
 let app = new Express();
 let httpServer = http.createServer(app);
-
 let systemParam = await SystemParam();
-app.use(Express.json());
-app.use('/publicAPI', PublicAPI(null, systemParam));
-app.use('/privateAPI', PrivateAPI(null, systemParam));
-if (process.env.NODE_ENV === "production") {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-   
-    app.use(Express.static(path.resolve(__dirname, '../dist')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
-    });
+dotenv.config({ path: './.env.' + process.env.NODE_ENV });
+let hkoADConfig = {
+    baseDN: process.env["AD_DOMAIN"],
+    hkoUserDN: "OU=DFS_Drive_CS,OU=People," + process.env["AD_DOMAIN"],
+    hkoGroupDN: "OU=Group Objects," + process.env["AD_DOMAIN"],
+    tlsOptions: { ca: [fs.readFileSync(process.env["AD_CA_CERT"])] },
+    url: process.env["AD_LDAP_URL"]
 }
 
+let jwt = new JWT(process.env.JWT_SECRET, process.env.JWT_EXPIRE_PERIOD);
+app.use(Express.json());
+app.use('/publicAPI', PublicAPI(hkoADConfig, jwt, systemParam));
 httpServer.listen(process.env.VITE_APP_SOCKET_PORT, () => {
     console.log('Express server is running on localhost:' + process.env.VITE_APP_SOCKET_PORT);
 });
