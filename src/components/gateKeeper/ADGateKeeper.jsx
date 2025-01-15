@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
-import StaffPlatForm from './components/staff/StaffPlatForm.jsx';
-export default function GateKeeper() {
+import StaffPlatForm from '../staff/StaffPlatForm.jsx';
+export default function ADGateKeeper() {
     let finalComponent;
     if (sessionStorage.getItem("accessToken")) {
         let id = JSON.parse(sessionStorage.getItem("accessToken"));

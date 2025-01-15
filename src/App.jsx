@@ -1,7 +1,8 @@
 //import './App.css'
 import "./components/style.css";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GateKeeper from './GateKeeper';
+import ADGateKeeper from './components/gateKeeper/ADGateKeeper';
+import AdminGateKeeper from './components/gateKeeper/AdminGateKeeper';
 import Login from "./components/loginForm/LoginForm";
 import RosterViewer from "./components/rosterViewer/RosterViewer";
 export default function App() {
@@ -9,10 +10,10 @@ export default function App() {
     <Router>
       <Routes>
         <Route path='/rosterWeb' element={<RosterViewer/>} />
-        <Route path='/staff' element={<GateKeeper />}>
-          <Route index element={<GateKeeper />} />
-            <Route path='admin' element={<SITOGateKeeper />} >
-              <Route index element={<SITOGateKeeper />} />
+        <Route path='/staff' element={<ADGateKeeper />}>
+          <Route index element={<ADGateKeeper />} />
+            <Route path='admin' element={<AdminGateKeeper />} >
+              <Route index element={<AdminGateKeeper />} />
             </Route>
         </Route>
         <Route path="/login" element={<Login />} />

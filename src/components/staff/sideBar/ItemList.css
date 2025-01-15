@@ -14,10 +14,15 @@
 .itemList{
 	list-style-type: square ;
 }
-.itemList ul li{
+span.logout:hover,
+.itemList li a:hover{
+	color: black;
+}
+.itemList li{
 	margin: 0px;
 	padding: 0px;
 }
+
 span.logout {
 	cursor: pointer;
 }
