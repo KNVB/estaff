@@ -25,14 +25,23 @@ export default class FetchAPI {
             }
         );
     }
+    addNonStandardWorkingHourRecord = async record => {
+        return (await this.#secureFetch({ "record": record }, "post", "/privateAPI/addNonStandardWorkingHourRecord"));
+    }
     addStaffInfo = async staffInfo => {
         return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/addStaffInfo"));
+    }
+    deleteNonStandardWorkingHourRecord = async recordId => {
+        return (await this.#secureFetch({ "recordId": recordId }, "post", "/privateAPI/deleteNonStandardWorkingHourRecord"));
     }
     exportRosterDataToExcel = async genExcelData => {
         return (await this.#secureFetch(genExcelData, "post", "/privateAPI/exportRosterDataToExcel", "blob"));
     }
     getActiveShiftList = async () => {
         return (await this.#secureFetch(null, "get", "/privateAPI/getActiveShiftList"));
+    }
+    getNonStandardWorkingHourList = async (year, month) => {
+        return (await this.#secureFetch({ year: year, month: month }, "get", "/privateAPI/getNonStandardWorkingHourList"));
     }
     getRosterSchedulerData = async (year, month) => {
         return (await this.#secureFetch({ year: year, month: month }, "get", "/privateAPI/getRosterSchedulerData"));
@@ -51,6 +60,9 @@ export default class FetchAPI {
     }
     saveToDB = async (preferredShiftList, roster, rosterMonth) => {
         return (await this.#secureFetch({ preferredShiftList, roster, rosterMonth }, "post", "/privateAPI/updateRoster"));
+    }
+    updateNonStandardWorkingHourRecord = async record => {
+        return (await this.#secureFetch({ "record": record }, "post", "/privateAPI/updateNonStandardWorkingHourRecord"));
     }
     updateStaffInfo = async staffInfo => {
         return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/updateStaffInfo"));

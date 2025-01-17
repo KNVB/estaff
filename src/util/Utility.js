@@ -21,6 +21,19 @@ export default class Utility {
         preShift = preShift.join(",");
         return preShift
     }
+    static dateFormatter = new Intl.DateTimeFormat('en-ZA', {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+    static dateTimeFormatter = new Intl.DateTimeFormat('en-ZA', {
+        day: "2-digit",
+        hour: "2-digit",
+        hour12: true,
+        minute: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
     static decodeJWT = token => {
         return decodeURIComponent(atob(token.split('.')[1].replace('-', '+').replace('_', '/')).split('').map(c => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`).join(''));
     }    
@@ -83,6 +96,9 @@ export default class Utility {
             duplicateShiftList,
             vacantShiftList
         }
+    }
+    static getDurationInHour = (startTime, endTime) => {
+        return (endTime - startTime) / 1000 / 3600
     }    
     static getExpectedWorkingHour = (itoRoster, firstDayObj, monthlyCalendar) => {
         let result = monthlyCalendar.noOfWorkingDay;
