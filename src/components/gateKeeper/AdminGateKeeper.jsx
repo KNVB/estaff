@@ -1,7 +1,8 @@
 import { Navigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import StaffPlatForm from '../staff/StaffPlatForm';
 export default function AdminGateKeeper(){
-    let identity = JSON.parse(sessionStorage.getItem("accessToken"));
+    let identity = JSON.parse(sessionStorage.getItem("identity"));
     let finalComponent;
     if (identity) {
         switch (true){
@@ -9,7 +10,7 @@ export default function AdminGateKeeper(){
                 finalComponent = <StaffPlatForm identity={id} />
                 break;
             case (identity.title.startsWith("SITO")):
-                finalComponent = <AdminPlatForm identity={id} />
+                finalComponent = <Outlet/>
                 break;
             default:
                 sessionStorage.clear();

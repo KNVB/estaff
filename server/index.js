@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import Express from 'express';
 import JWT from "./util/JWT.js";
 import PublicAPI from "./util/PublicAPI.js";
+import PrivateAPI from "./util/PrivateAPI.js";
 import SystemParam from './classes/SystemParam.js';
 let app = new Express();
 let httpServer = http.createServer(app);
@@ -20,6 +21,7 @@ let hkoADConfig = {
 let jwt = new JWT(process.env.JWT_SECRET, process.env.JWT_EXPIRE_PERIOD);
 app.use(Express.json());
 app.use('/publicAPI', PublicAPI(hkoADConfig, jwt, systemParam));
+app.use('/privateAPI', PrivateAPI(jwt, systemParam));
 httpServer.listen(process.env.VITE_APP_SOCKET_PORT, () => {
     console.log('Express server is running on localhost:' + process.env.VITE_APP_SOCKET_PORT);
 });

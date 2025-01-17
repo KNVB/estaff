@@ -8,7 +8,7 @@ export default class JWT {
     }
     isValid = async token => {
         return new Promise((resolve, reject) => {
-            jwt.verify(token, accessTokenSecret, (err, user) => {
+            jwt.verify(token, this.#accessTokenSecret, (err, user) => {
                 if (err) {
                     reject(err)
                 }

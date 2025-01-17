@@ -1,0 +1,76 @@
+.clearAllButton,
+.exportButton,
+.fillEmptyShiftWithOButton,
+.saveRosterToDBButton {
+    position: relative;
+    display: inline-block;
+    padding: 10px 15px;
+    -moz-border-radius: 28px;
+    -webkit-border-radius: 28px;
+    border-radius: 28px;
+    /* text styles */
+    text-decoration: none;
+    color: #fff;
+    font-size: 15px;
+    font-family: sans-serif;
+    font-weight: 100;
+}
+
+.clearAllButton {
+    background-color: #FF8500;
+    /*for compatibility with older browsers*/
+    /*for compatibility with older browsers*/
+    background-image: linear-gradient(#FF8500, lightOrange);
+    box-shadow: 0px 1px 4px -2px #333;
+    text-shadow: 0px -1px #333;
+    font-size: 15px;
+}
+.clearAllButton:hover {
+    background: linear-gradient(#FF8500, #F7A80A);
+    font-size: 15px;
+}
+
+.exportButton{
+    background-color: black; /*for compatibility with older browsers*/
+	background-image: linear-gradient(black,#6E685E);
+    font-size: 15px;
+}
+.exportButton:hover{
+    background: linear-gradient(#6E685E,black);	
+}
+.fillEmptyShiftWithOButton {
+    background-color: green;    
+    background-image: linear-gradient(#FFB6C1, #CD5C5C);
+    font-size: 15px;
+}
+.fillEmptyShiftWithOButton:hover{
+    background: linear-gradient(IndianRed, lightPink);
+}
+.saveRosterToDBButton{
+    background-color: red; /*for compatibility with older browsers*/
+	background-image: linear-gradient(red,lightred);
+    font-size: 15px;
+}
+.saveRosterToDBButton:hover{
+    background: linear-gradient(pink,red);
+}
+.clearAllButton:hover,
+.exportButton:hover,
+.fillEmptyShiftWithOButton:hover,
+.saveRosterToDBButton:hover {
+    cursor: pointer;
+    color: #fff;
+}
+.clearAllButton:after,
+.exportButton:after,
+.fillEmptyShiftWithOButton:after,
+.saveRosterToDBButton:after {
+    background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+    border-radius: 28px 28px 0px 0px;
+    content: '';
+    height: 50%;
+    left: 2px;
+    position: absolute;
+    top: 2px;
+    width: calc(100% - 4px);
+}

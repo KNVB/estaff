@@ -48,8 +48,9 @@ export function useLoginForm() {
         try {
             if ((itemList.adPassword !== "") && (itemList.adUserName !== "")) {
                 let result = await itemList.emstfUtil.login(itemList.adUserName, itemList.adPassword);
-                result = Utility.decodeJWT(result);
+                let identity = Utility.decodeJWT(result);
                 sessionStorage.setItem("accessToken", result);
+                sessionStorage.setItem("identity",identity);
                 navigate("/staff");
             } else {
                 throw "HKO AD account name or password is missing.";

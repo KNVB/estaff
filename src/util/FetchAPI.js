@@ -1,4 +1,5 @@
 import axios from "axios";
+import Utility from "./Utility";
 export default class FetchAPI {
     #api;
     constructor() {
@@ -24,8 +25,23 @@ export default class FetchAPI {
             }
         );
     }
+    addStaffInfo = async staffInfo => {
+        return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/addStaffInfo"));
+    }
+    exportRosterDataToExcel = async genExcelData => {
+        return (await this.#secureFetch(genExcelData, "post", "/privateAPI/exportRosterDataToExcel", "blob"));
+    }
+    getActiveShiftList = async () => {
+        return (await this.#secureFetch(null, "get", "/privateAPI/getActiveShiftList"));
+    }
+    getRosterSchedulerData = async (year, month) => {
+        return (await this.#secureFetch({ year: year, month: month }, "get", "/privateAPI/getRosterSchedulerData"));
+    }
     getRosterViewerData = async (year, month) => {
         return (await this.#fetch({ year: year, month: month }, "get", "/publicAPI/getRosterViewerData"));
+    }
+    getStaffList = async () => {
+        return (await this.#secureFetch(null, "get", "/privateAPI/getStaffList"));
     }
     login = async loginObj => {
         return await this.#fetch({ loginObj: loginObj }, "post", "/publicAPI/login");
@@ -33,7 +49,12 @@ export default class FetchAPI {
     logout = async () => {
         return await this.#secureFetch(null, "get", "/privateAPI/logout");
     }
-
+    saveToDB = async (preferredShiftList, roster, rosterMonth) => {
+        return (await this.#secureFetch({ preferredShiftList, roster, rosterMonth }, "post", "/privateAPI/updateRoster"));
+    }
+    updateStaffInfo = async staffInfo => {
+        return (await this.#secureFetch({ "staffInfo": staffInfo }, "post", "/privateAPI/updateStaffInfo"));
+    }
     //================================================================================================================================
     #downloadFile = (fileName, responseData) => {
         const newBlob = new Blob([responseData]);
@@ -65,7 +86,12 @@ export default class FetchAPI {
         }
         return response.data;
     }
-    #secureFetch = async (data, method, url, responseType) => {
-        return await this.#fetch(data, method, url, responseType, { "access-token": sessionStorage.getItem("accessToken") });
+    #secureFetch = async (data, method, url, responseType) => {        
+        let result=await this.#fetch(data, method, url, responseType, {"Authorization": "Bearer "+sessionStorage.getItem("accessToken")});;
+        //console.log(result);
+        let identity = Utility.decodeJWT(result.accessToken);
+        sessionStorage.setItem("accessToken", result.accessToken);
+        sessionStorage.setItem("identity",identity);
+        return result.result; 
     }
 }
