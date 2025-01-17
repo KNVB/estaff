@@ -60,33 +60,42 @@ export default class Dbo {
     }
     addStaffInfo = async staffInfo => {
         try {
-            await this.#connection.promise().beginTransaction();
-            console.log("Add EMSTF info. transaction start.");
-            console.log("===============================");
-            console.log(staffInfo);
-            this.#sqlString = "insert into emstf_staff_info (available_Shift,duty_pattern,hko_ad_user,staff_Id,";
-            this.#sqlString += "join_date,leave_date,staff_name,staff_post,working_hour_per_day)";
-            this.#sqlString += "values(?,?,?,?,?,?,?,?,?)";
-            await this.#executeQuery(this.#sqlString, [
-                staffInfo.availableShift.join(","),
-                staffInfo.dutyPattern,
-                staffInfo.hkoAdUser,
-                staffInfo.staffId,
-                staffInfo.joinDate,
-                staffInfo.leaveDate,
-                staffInfo.staffName,
+            this.#sqlString = "select * from emstf_staff_info where staff_post=? and leave_date > now()";
+            let result = await this.#executeQuery(this.#sqlString, [
                 staffInfo.staffPost,
-                staffInfo.workingHourPerDay
             ]);
-            this.#sqlString = "insert into black_list_pattern (staff_Id, black_list_pattern) values(?,?)";
-            for (let i = 0; i < staffInfo.blackListedShiftPattern.length; i++) {
-                let shiftPattern = staffInfo.blackListedShiftPattern[i];
-                await this.#executeQuery(this.#sqlString, [staffInfo.staffId, shiftPattern]);
+            if (result.length === 0) {
+                await this.#connection.promise().beginTransaction();
+                console.log("Add EMSTF info. transaction start.");
+                console.log("===============================");
+                console.log(staffInfo);
+
+                this.#sqlString = "insert into emstf_staff_info (available_Shift,duty_pattern,hko_ad_user,staff_Id,";
+                this.#sqlString += "join_date,leave_date,staff_name,staff_post,working_hour_per_day)";
+                this.#sqlString += "values(?,?,?,?,?,?,?,?,?)";
+                await this.#executeQuery(this.#sqlString, [
+                    staffInfo.availableShift.join(","),
+                    staffInfo.dutyPattern,
+                    staffInfo.hkoAdUser,
+                    staffInfo.staffId,
+                    staffInfo.joinDate,
+                    staffInfo.leaveDate,
+                    staffInfo.staffName,
+                    staffInfo.staffPost,
+                    staffInfo.workingHourPerDay
+                ]);
+                this.#sqlString = "insert into black_list_pattern (staff_Id, black_list_pattern) values(?,?)";
+                for (let i = 0; i < staffInfo.blackListedShiftPattern.length; i++) {
+                    let shiftPattern = staffInfo.blackListedShiftPattern[i];
+                    await this.#executeQuery(this.#sqlString, [staffInfo.staffId, shiftPattern]);
+                }
+                await this.#connection.promise().commit();
+                console.log("An EMSTF staff info is added successfully.");
+                console.log("===============================");
+                return true;
+            } else {
+                throw new Error("The staff post ("+staffInfo.staffPost+") already exists.");
             }
-            await this.#connection.promise().commit();
-            console.log("An EMSTF staff info is added successfully.");
-            console.log("===============================");
-            return true;
         } catch (error) {
             if (this.#connection) {
                 await this.#connection.promise().rollback();
@@ -112,7 +121,7 @@ export default class Dbo {
                 shiftMonth,
                 record.staff_id
             ]);
-            
+
             this.#sqlString = "delete from non_standard_working_hour where id=?";
             result = await this.#executeQuery(this.#sqlString, [recordId]);
 

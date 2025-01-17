@@ -68,19 +68,23 @@ export function useStaffForm() {
     let doUpdate = async (form, action) => {
         if (form.reportValidity()) {
             if (isAvailableShiftValid()) {
-                switch (action) {
-                    case "add":
-                        await itemList.staffUtil.addStaffInfo(itemList.staffInfo);
-                        alert("A New Staff Info is added.");
-                        backToITOlList();
-                        break;
-                    case "edit":
-                        await itemList.staffUtil.updateStaffInfo(itemList.staffInfo);
-                        alert("The Staff info. has been saved.");
-                        backToITOlList();
-                        break;
-                    default:
-                        break;
+                try{
+                    switch (action) {
+                        case "add":
+                            await itemList.staffUtil.addStaffInfo(itemList.staffInfo);
+                            alert("A New Staff Info is added.");
+                            backToITOlList();
+                            break;
+                        case "edit":
+                            await itemList.staffUtil.updateStaffInfo(itemList.staffInfo);
+                            alert("The Staff info. has been saved.");
+                            backToITOlList();
+                            break;
+                        default:
+                            break;
+                    }
+                }catch (error){
+                    alert(error.message);
                 }
             }
         }
